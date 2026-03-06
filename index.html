@@ -8,16 +8,20 @@
 	</head>
 	<body>
 		<main>
-			<div class="calendar" id="calendar"></div>
-			<div class="month__contol">
-				<button id="month__button--back" class="disabled" disabled="true">
-					<
-				</button>
-				<span id="month__name" class="month__name"></span>
-				<button id="month__button--ahead">></button>
-			</div>
-			<div id="materias__info"></div>
+			<section class="calendar__section">
+				<div class="calendar" id="calendar"></div>
+				<div class="month__contol">
+					<button id="month__button--back" class="disabled" disabled="true">
+						<
+					</button>
+					<span id="month__name" class="month__name"></span>
+					<button id="month__button--ahead">></button>
+				</div>
+				<div id="materias__info"></div>
+			</section>
+			<section id="dayInfo__section" class="dayInfo__section"></section>
 		</main>
 	</body>
 	<script src="scripts/calendar.js"></script>
+	<script src="scripts/dayInfo.js"></script>
 </html>

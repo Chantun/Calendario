@@ -105,6 +105,31 @@ main {
 	border: none;
 }
 
+.dayInfo__section {
+	/* border: solid 1px #000; */
+	border-top: solid 2px #636363;
+	margin: auto;
+	max-width: 980px;
+	margin-top: 50px;
+}
+
+.dayInfo__title {
+	text-align: center;
+}
+
+.dayInfo__line {
+	padding: 8px 12px;
+	display: flex;
+}
+
+.dayInfo__name {
+	flex: 1;
+}
+
+.dayInfo__hour {
+	font-weight: 700;
+}
+
 /* .disabled {
 	background-color: #ff0000;
 } */

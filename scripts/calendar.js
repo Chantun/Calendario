@@ -82,20 +82,24 @@ function setCalendar() {
 		); // If the month didn't start at sunday
 	}
 	for (let i = 1; i <= info.lastDay; i++) {
-		days.push(
-			Object.assign(document.createElement('div'), {
-				className:
-					i == info.currentDay
-						? 'calendar__day calendar__day--current'
-						: i < info.currentDay
-							? 'calendar__day'
-							: 'calendar__day calendar__day--upcoming',
-				innerHTML:
-					i < info.currentDay
-						? `<div class="calendar__day--past"></div><span class="calendar__day--num">${i}</span>`
-						: `<span class="calendar__day--num">${i}</span>`,
-			}),
-		);
+		const day = Object.assign(document.createElement('div'), {
+			className:
+				i == info.currentDay
+					? 'calendar__day calendar__day--current'
+					: i < info.currentDay
+						? 'calendar__day'
+						: 'calendar__day calendar__day--upcoming',
+			innerHTML:
+				i < info.currentDay
+					? `<div class="calendar__day--past"></div><span class="calendar__day--num">${i}</span>`
+					: `<span class="calendar__day--num">${i}</span>`,
+		});
+
+		day.addEventListener('click', () => {
+			displayDay(i);
+		});
+
+		days.push(day);
 	}
 	while (days.length < 42) {
 		days.push(
@@ -122,7 +126,7 @@ function setCalendar() {
 }
 
 function changeMonth(month) {
-	// The samme, but it executets when the month changes
+	// The same, but it executets when the month changes
 	if (month == currentMonth) {
 		setCalendar();
 		return;
@@ -148,6 +152,11 @@ function changeMonth(month) {
 			className: 'calendar__day calendar__day--upcoming',
 			innerHTML: `<span class="calendar__day--num">${i}</span>`,
 		});
+
+		day.addEventListener('click', () => {
+			displayDay(i);
+		});
+
 		days.push(day);
 	}
 	while (days.length < 42) {
@@ -193,6 +202,26 @@ function verifyMonth() {
 	}
 }
 
+function displayDay(d) {
+	const container = document.getElementById('dayInfo__section');
+	container.innerHTML = '';
+	const date = new Date(currentYear, month, d);
+	const days = horariosData.filter((n) => n.day === date.getDay());
+
+	const title = document.createElement('h2');
+	title.classList.add('dayInfo__title');
+	title.textContent = `${d}-${month + 1}-${currentYear}`;
+	container.append(title);
+
+	days.forEach((n) => {
+		const div = document.createElement('div');
+		div.style.backgroundColor = `#${n.color}`;
+		div.classList.add('dayInfo__line');
+		div.innerHTML = `<span class='dayInfo__name'>${n.name}</span><span class='dayInfo__hour'>${n.start.split(':', 2).join(':')} - ${n.finish.split(':', 2).join(':')}</span>`;
+		container.append(div);
+	});
+}
+
 // Main
 
 fetch('http://localhost:3000/getHorarios') // Fetch to the server (send all the data in one)
@@ -204,7 +233,7 @@ fetch('http://localhost:3000/getHorarios') // Fetch to the server (send all the 
 	})
 	.then((data) => {
 		horariosData = data;
-
+		window.horariosData = horariosData;
 		setCalendar();
 		setMateriaInfo();
 	})
