@@ -12,6 +12,11 @@ app.get(`/getHorarios`, async (req, res) => {
 	res.status(200).send(results);
 });
 
+app.get(`/getHolidays`, async (req, res) => {
+	const results = await db.getHolidays();
+	res.status(200).send(results);
+});
+
 app.listen(PORT, () => {
 	console.log(`Server escuchando en http://localhost:${PORT}`);
 });

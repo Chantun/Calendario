@@ -1,7 +1,8 @@
 const puppeteer = require('puppeteer');
 const db = require('./db');
 
-const year = 2026;
+const date = new Date();
+const year = date.getFullYear();
 
 function formatData(data) {
 	return data.map((holiday) => {

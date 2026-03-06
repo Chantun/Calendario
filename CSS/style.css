@@ -101,6 +101,10 @@ main {
 	margin-right: 6px;
 }
 
+.no_classes {
+	background-color: #d4d4d4;
+}
+
 .not_a_day {
 	border: none;
 }

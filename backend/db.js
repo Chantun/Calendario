@@ -18,6 +18,15 @@ async function getHorarios() {
 	}
 }
 
+async function getHolidays() {
+	try {
+		const [results] = await conn.query(`SELECT * FROM feriados;`);
+		return results;
+	} catch (err) {
+		console.error(err);
+	}
+}
+
 async function addHolidayScrap(data) {
 	try {
 		await conn.query(
@@ -31,4 +40,4 @@ async function addHolidayScrap(data) {
 	}
 }
 
-module.exports = { getHorarios, addHolidayScrap };
+module.exports = { getHorarios, addHolidayScrap, getHolidays };

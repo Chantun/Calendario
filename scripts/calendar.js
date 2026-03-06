@@ -6,6 +6,23 @@ const currentYear = date.getFullYear();
 const calendar = document.getElementById('calendar');
 const monthSpan = document.getElementById('month__name');
 let horariosData = []; // Variable global para almacenar los horarios
+let holidaysData = [];
+
+function getHolidaysByMonth() {
+	const aux = holidaysData.filter((n) => {
+		const date = new Date(n.date);
+		return date.getMonth() == month;
+	});
+	const aux2 = aux.map((n) => {
+		return {
+			day: new Date(n.date).getDate(),
+			type: n.type,
+			details: n.details,
+		};
+	});
+	// console.log(aux2);
+	return aux2;
+}
 
 // Sincronize the calendar with horariosData
 function alignCalendar(days) {
@@ -17,7 +34,10 @@ function alignCalendar(days) {
 	let dayNum = 0; // 0-6 cont, trac the curren day, 0 to monday, 1 to tuesday, etc
 
 	for (i = 0; i < days.length; i++) {
-		if (!days[i].classList.contains('not_a_day')) {
+		if (
+			!days[i].classList.contains('not_a_day') &
+			!days[i].classList.contains('no_classes')
+		) {
 			// Verifies if the day exists
 			const colors = daysArray[dayNum].map((data) => `#${data.color}`);
 			if (colors.length === 1) {
@@ -72,6 +92,8 @@ function setCalendar() {
 	// Array to store the day's elements
 	const days = [];
 
+	const holidays = getHolidaysByMonth();
+
 	// Fill the array with elements
 	for (let i = 0; i < info.firstDay; i++) {
 		days.push(
@@ -94,6 +116,10 @@ function setCalendar() {
 					? `<div class="calendar__day--past"></div><span class="calendar__day--num">${i}</span>`
 					: `<span class="calendar__day--num">${i}</span>`,
 		});
+
+		if (holidays.some((h) => h.day === i)) {
+			day.classList.add('no_classes');
+		}
 
 		day.addEventListener('click', () => {
 			displayDay(i);
@@ -137,7 +163,10 @@ function changeMonth(month) {
 		firstDay: new Date(date.getFullYear(), date.getMonth(), 1).getDay(),
 		lastDay: new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate(),
 	};
+
 	const days = [];
+
+	const holidays = getHolidaysByMonth();
 
 	for (let i = 0; i < info.firstDay; i++) {
 		days.push(
@@ -152,6 +181,10 @@ function changeMonth(month) {
 			className: 'calendar__day calendar__day--upcoming',
 			innerHTML: `<span class="calendar__day--num">${i}</span>`,
 		});
+
+		if (holidays.some((h) => h.day === i)) {
+			day.classList.add('no_classes');
+		}
 
 		day.addEventListener('click', () => {
 			displayDay(i);
@@ -233,9 +266,21 @@ fetch('http://localhost:3000/getHorarios') // Fetch to the server (send all the 
 	})
 	.then((data) => {
 		horariosData = data;
-		window.horariosData = horariosData;
-		setCalendar();
-		setMateriaInfo();
+		fetch('http://localhost:3000/getHolidays')
+			.then((response) => {
+				if (!response.ok) {
+					throw new Error('Error en la respuesta de la API');
+				}
+				return response.json();
+			})
+			.then((data) => {
+				holidaysData = data;
+				setCalendar();
+				setMateriaInfo();
+			})
+			.catch((error) => {
+				console.error('Error:', error);
+			});
 	})
 	.catch((error) => {
 		console.error('Error:', error);
