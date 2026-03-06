@@ -314,7 +314,7 @@ function displayDay(d) {
 			events.forEach((m) => {
 				if (n.name == m.name) {
 					const iconSpan = document.createElement('span');
-					iconSpan.classList.add('icon_before');
+					iconSpan.classList.add('icon_before', 'icon_before--big');
 					iconSpan.classList.add(eventToClass(m.type));
 					div.querySelector('.dayInfo__name').prepend(iconSpan);
 				}
@@ -325,7 +325,7 @@ function displayDay(d) {
 		const div = document.createElement('div');
 		div.style.backgroundColor = `#D4D4D4`;
 		div.classList.add('dayInfo__line');
-		div.innerHTML = `<span class='icon_before icon_holiday dayInfo__name'> ${holiday.details}</span><span class='dayInfo__hour'>${holiday.type}</span>`;
+		div.innerHTML = `<span class='dayInfo__name'><span class="icon_before icon_before--big icon_holiday"></span> ${holiday.details}</span><span class='dayInfo__hour'>${holiday.type}</span>`;
 		container.append(div);
 	}
 }

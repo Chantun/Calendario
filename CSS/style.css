@@ -93,6 +93,10 @@ main {
 	-webkit-font-smoothing: antialiased;
 	-moz-osx-font-smoothing: grayscale;
 }
+.icon_before--big::before {
+	font-size: 1.4rem;
+	padding-right: 4px;
+}
 
 .icon_holiday::before {
 	content: '';
@@ -186,11 +190,13 @@ main {
 }
 
 .dayInfo__line {
-	padding: 8px 12px;
+	padding: 8px 12px 4px 12px;
 	display: flex;
 }
 
 .dayInfo__name {
+	display: flex;
+	align-items: center;
 	flex: 1;
 }
 
