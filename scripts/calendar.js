@@ -117,7 +117,12 @@ function setCalendar() {
 					: `<span class="calendar__day--num">${i}</span>`,
 		});
 
+		day.innerHTML += `<div class="icon__container"></div>`;
+
 		if (holidays.some((h) => h.day === i)) {
+			day
+				.querySelector('.icon__container')
+				.classList.add('icon_before', 'icon_holiday');
 			day.classList.add('no_classes');
 		}
 
@@ -182,7 +187,12 @@ function changeMonth(month) {
 			innerHTML: `<span class="calendar__day--num">${i}</span>`,
 		});
 
+		day.innerHTML += `<div class="icon__container"></div>`;
+
 		if (holidays.some((h) => h.day === i)) {
+			day
+				.querySelector('.icon__container')
+				.classList.add('icon_before', 'icon_holiday');
 			day.classList.add('no_classes');
 		}
 
@@ -246,13 +256,25 @@ function displayDay(d) {
 	title.textContent = `${d}-${month + 1}-${currentYear}`;
 	container.append(title);
 
-	days.forEach((n) => {
+	const holiday = holidaysData.find(
+		(h) => new Date(h.date).toString() == date.toString(),
+	);
+
+	if (!holiday) {
+		days.forEach((n) => {
+			const div = document.createElement('div');
+			div.style.backgroundColor = `#${n.color}`;
+			div.classList.add('dayInfo__line');
+			div.innerHTML = `<span class='dayInfo__name'>${n.name}</span><span class='dayInfo__hour'>${n.start.split(':', 2).join(':')} - ${n.finish.split(':', 2).join(':')}</span>`;
+			container.append(div);
+		});
+	} else {
 		const div = document.createElement('div');
-		div.style.backgroundColor = `#${n.color}`;
+		div.style.backgroundColor = `#D4D4D4`;
 		div.classList.add('dayInfo__line');
-		div.innerHTML = `<span class='dayInfo__name'>${n.name}</span><span class='dayInfo__hour'>${n.start.split(':', 2).join(':')} - ${n.finish.split(':', 2).join(':')}</span>`;
+		div.innerHTML = `<span class='icon_before icon_holiday dayInfo__name'> ${holiday.details}</span><span class='dayInfo__hour'>${holiday.type}</span>`;
 		container.append(div);
-	});
+	}
 }
 
 // Main
