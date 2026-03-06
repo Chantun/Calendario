@@ -27,6 +27,17 @@ async function getHolidays() {
 	}
 }
 
+async function getEvents() {
+	try {
+		const [results] =
+			await conn.query(`SELECT M.name, E.type, E.date FROM events E
+			JOIN materias M ON E.materia_id = M.id;`);
+		return results;
+	} catch (err) {
+		console.error(err);
+	}
+}
+
 async function addHolidayScrap(data) {
 	try {
 		await conn.query(
@@ -40,4 +51,4 @@ async function addHolidayScrap(data) {
 	}
 }
 
-module.exports = { getHorarios, addHolidayScrap, getHolidays };
+module.exports = { getHorarios, addHolidayScrap, getHolidays, getEvents };

@@ -84,7 +84,7 @@ main {
 }
 
 .icon_before::before {
-	font-family: 'UnIcons', sans-serif !important;
+	font-family: 'UnIcons' !important;
 	font-style: normal;
 	font-weight: normal;
 	font-variant: normal;
@@ -99,7 +99,7 @@ main {
 	color: #1b6ef3;
 }
 .icon_paro::before {
-	content: '';
+	content: '';
 	color: #d7263d;
 }
 .icon_expo::before {
@@ -108,7 +108,7 @@ main {
 }
 .icon_mesa::before {
 	content: '';
-	color: #f08a00;
+	color: #c2185b;
 }
 .icon_exam::before {
 	content: '';
@@ -117,6 +117,10 @@ main {
 .icon_recu::before {
 	content: '';
 	color: #0fa958;
+}
+.icon_vacation::before {
+	content: '';
+	color: #f08a00;
 }
 
 .icon__container {

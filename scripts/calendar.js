@@ -7,6 +7,7 @@ const calendar = document.getElementById('calendar');
 const monthSpan = document.getElementById('month__name');
 let horariosData = []; // Variable global para almacenar los horarios
 let holidaysData = [];
+let eventsData = [];
 
 function getHolidaysByMonth() {
 	const aux = holidaysData.filter((n) => {
@@ -20,8 +21,35 @@ function getHolidaysByMonth() {
 			details: n.details,
 		};
 	});
-	// console.log(aux2);
 	return aux2;
+}
+
+function getEventsByMonth() {
+	const aux = eventsData.filter((n) => {
+		const date = new Date(n.date);
+		return date.getMonth() == month;
+	});
+	const aux2 = aux.map((n) => {
+		return {
+			day: new Date(n.date).getDate(),
+			type: n.type,
+			name: n.name,
+		};
+	});
+	return aux2;
+}
+
+function eventToClass(num) {
+	switch (num) {
+		case 1:
+			return 'icon_paro';
+		case 2:
+			return 'icon_expo';
+		case 3:
+			return 'icon_exam';
+		case 4:
+			return 'icon_recu';
+	}
 }
 
 // Sincronize the calendar with horariosData
@@ -93,6 +121,7 @@ function setCalendar() {
 	const days = [];
 
 	const holidays = getHolidaysByMonth();
+	const events = getEventsByMonth();
 
 	// Fill the array with elements
 	for (let i = 0; i < info.firstDay; i++) {
@@ -120,10 +149,16 @@ function setCalendar() {
 		day.innerHTML += `<div class="icon__container"></div>`;
 
 		if (holidays.some((h) => h.day === i)) {
-			day
-				.querySelector('.icon__container')
-				.classList.add('icon_before', 'icon_holiday');
+			day.querySelector('.icon__container').innerHTML +=
+				`<span class="icon_before icon_holiday"></span>`;
 			day.classList.add('no_classes');
+		}
+		if (events.some((n) => n.day === i)) {
+			const eventDay = events.filter((n) => n.day === i);
+			const container = day.querySelector('.icon__container');
+			eventDay.forEach((n) => {
+				container.innerHTML += `<span class="icon_before ${eventToClass(n.type)}">`;
+			});
 		}
 
 		day.addEventListener('click', () => {
@@ -172,6 +207,7 @@ function changeMonth(month) {
 	const days = [];
 
 	const holidays = getHolidaysByMonth();
+	const events = getEventsByMonth();
 
 	for (let i = 0; i < info.firstDay; i++) {
 		days.push(
@@ -190,10 +226,16 @@ function changeMonth(month) {
 		day.innerHTML += `<div class="icon__container"></div>`;
 
 		if (holidays.some((h) => h.day === i)) {
-			day
-				.querySelector('.icon__container')
-				.classList.add('icon_before', 'icon_holiday');
+			day.querySelector('.icon__container').innerHTML +=
+				`<span class="icon_before icon_holiday"></span>`;
 			day.classList.add('no_classes');
+		}
+		if (events.some((n) => n.day === i)) {
+			const eventDay = events.filter((n) => n.day === i);
+			const container = day.querySelector('.icon__container');
+			eventDay.forEach((n) => {
+				container.innerHTML += `<span class="icon_before ${eventToClass(n.type)}">`;
+			});
 		}
 
 		day.addEventListener('click', () => {
@@ -259,13 +301,24 @@ function displayDay(d) {
 	const holiday = holidaysData.find(
 		(h) => new Date(h.date).toString() == date.toString(),
 	);
+	const events = eventsData.filter(
+		(n) => new Date(n.date).toString() == date.toString(),
+	);
 
 	if (!holiday) {
 		days.forEach((n) => {
 			const div = document.createElement('div');
 			div.style.backgroundColor = `#${n.color}`;
 			div.classList.add('dayInfo__line');
-			div.innerHTML = `<span class='dayInfo__name'>${n.name}</span><span class='dayInfo__hour'>${n.start.split(':', 2).join(':')} - ${n.finish.split(':', 2).join(':')}</span>`;
+			div.innerHTML = `<span class='dayInfo__name'> ${n.name}</span><span class='dayInfo__hour'>${n.start.split(':', 2).join(':')} - ${n.finish.split(':', 2).join(':')}</span>`;
+			events.forEach((m) => {
+				if (n.name == m.name) {
+					const iconSpan = document.createElement('span');
+					iconSpan.classList.add('icon_before');
+					iconSpan.classList.add(eventToClass(m.type));
+					div.querySelector('.dayInfo__name').prepend(iconSpan);
+				}
+			});
 			container.append(div);
 		});
 	} else {
@@ -297,8 +350,21 @@ fetch('http://localhost:3000/getHorarios') // Fetch to the server (send all the 
 			})
 			.then((data) => {
 				holidaysData = data;
-				setCalendar();
-				setMateriaInfo();
+				fetch('http://localhost:3000/getEvents')
+					.then((response) => {
+						if (!response.ok) {
+							throw new Error('Error en la respuesta de la API');
+						}
+						return response.json();
+					})
+					.then((data) => {
+						eventsData = data;
+						setCalendar();
+						setMateriaInfo();
+					})
+					.catch((error) => {
+						console.error('Error:', error);
+					});
 			})
 			.catch((error) => {
 				console.error('Error:', error);
