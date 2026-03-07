@@ -375,11 +375,11 @@ function displayDay(d) {
 	const events = eventsData.filter(
 		(n) => new Date(n.date).toString() == date.toString(),
 	);
-	const period = periodsData.find(
+	const periods = periodsData.filter(
 		(p) => (new Date(p.start) <= date && new Date(p.end) >= date)
 	);
 
-	if (!holiday && !period?.suspension) {
+	if (!holiday && !periods?.some((p) => p.suspension)) {
 		days.forEach((n) => {
 			const div = document.createElement('div');
 			div.style.backgroundColor = `#${n.color}`;
@@ -402,12 +402,14 @@ function displayDay(d) {
 		div.innerHTML = `<span class='dayInfo__name'><span class="icon_before icon_before--big icon_holiday"></span> ${holiday.details}</span><span class='dayInfo__hour'>${holiday.type}</span>`;
 		container.append(div);
 	} 
-	if (period) {
-		const div = document.createElement('div');
-		div.classList.add('dayInfo__line');
-		!period.suspension ? div.style.backgroundColor = '#FAD7C8' : div.style.backgroundColor = '#D4D4D4';
-		div.innerHTML = `<span class='dayInfo__name'><span class="icon_before icon_before--big ${eventToClass(period.type)}"></span> ${period.details}</span>`;
-		container.append(div);
+	if (periods) {
+		periods.forEach((p) => {
+			const div = document.createElement('div');
+			div.classList.add('dayInfo__line');
+			!p.suspension ? div.style.backgroundColor = '#FAD7C8' : div.style.backgroundColor = '#D4D4D4';
+			div.innerHTML = `<span class='dayInfo__name'><span class="icon_before icon_before--big ${eventToClass(p.type)}"></span> ${p.details}</span>`;
+			container.append(div);
+		});
 	}
 }
 
