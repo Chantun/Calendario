@@ -38,6 +38,16 @@ async function getEvents() {
 	}
 }
 
+async function getPeriods() {
+	try {
+		const [results] =
+			await conn.query(`SELECT type, start, end, details, suspension FROM periods;`);
+		return results;
+	} catch(err) {
+		console.error(err);
+	}
+}
+
 async function addHolidayScrap(data) {
 	try {
 		await conn.query(
@@ -51,4 +61,4 @@ async function addHolidayScrap(data) {
 	}
 }
 
-module.exports = { getHorarios, addHolidayScrap, getHolidays, getEvents };
+module.exports = { getHorarios, addHolidayScrap, getHolidays, getEvents, getPeriods };

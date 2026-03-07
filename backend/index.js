@@ -15,6 +15,7 @@ app.get('/', (req, res) => {
 			'/getHorarios',
 			'/getHolidays',
 			'/getEvents',
+			'/getPeriods',
 		]);
 });
 
@@ -30,6 +31,11 @@ app.get('/getHolidays', async (req, res) => {
 
 app.get('/getEvents', async (req, res) => {
 	const results = await db.getEvents();
+	res.status(200).send(results);
+});
+
+app.get('/getPeriods', async (req, res) => {
+	const results = await db.getPeriods();
 	res.status(200).send(results);
 });
 

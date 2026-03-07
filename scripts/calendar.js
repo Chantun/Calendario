@@ -8,6 +8,7 @@ const monthSpan = document.getElementById('month__name');
 let horariosData = []; // Variable global para almacenar los horarios
 let holidaysData = [];
 let eventsData = [];
+let periodsData = [];
 
 function getHolidaysByMonth() {
 	const aux = holidaysData.filter((n) => {
@@ -39,6 +40,22 @@ function getEventsByMonth() {
 	return aux2;
 }
 
+function getPeriodsByMonth() {
+	const aux = periodsData.filter((n) => {
+		const start = new Date(n.start);
+		const end = new Date(n.end);
+		return (start.getMonth() == month | end.getMonth() == month)
+	})
+	const aux2 = aux.map((n) => {
+		return {
+			...n,
+			start: (new Date(n.start).getMonth() == month) ? new Date(n.start).getDate() : null,
+			end: (new Date(n.end).getMonth() == month) ? new Date(n.end).getDate() : null
+		};
+	});
+	return aux2;
+}
+
 function eventToClass(num) {
 	switch (num) {
 		case 1:
@@ -49,6 +66,12 @@ function eventToClass(num) {
 			return 'icon_exam';
 		case 4:
 			return 'icon_recu';
+		case 5:
+			return 'icon_vacation';
+		case 6:
+			return 'icon_mesa';
+		default:
+			return 'icon_others';
 	}
 }
 
@@ -122,6 +145,7 @@ function setCalendar() {
 
 	const holidays = getHolidaysByMonth();
 	const events = getEventsByMonth();
+	const periods = getPeriodsByMonth();
 
 	// Fill the array with elements
 	for (let i = 0; i < info.firstDay; i++) {
@@ -157,7 +181,7 @@ function setCalendar() {
 			const eventDay = events.filter((n) => n.day === i);
 			const container = day.querySelector('.icon__container');
 			eventDay.forEach((n) => {
-				container.innerHTML += `<span class="icon_before ${eventToClass(n.type)}">`;
+				container.innerHTML += `<span class="icon_before ${eventToClass(n.type)}"></span>`;
 			});
 		}
 
@@ -167,6 +191,29 @@ function setCalendar() {
 
 		days.push(day);
 	}
+	periods.forEach((p) => {
+		function setPeriod(i, firstday) {
+			days[firstday + i].querySelector('.icon__container').innerHTML +=
+				`<span class="icon_before ${eventToClass(p.type)}"></span>`;
+			if (p.suspension) {
+				days[firstday + i].classList.add('no_classes');
+			}
+		}
+		if (p.start && p.end) {
+			for (let i = p.start - 1; i < p.end; i++) {
+				setPeriod(i, info.firstDay);
+			}
+		} 
+		else if (p.start) {
+			for (let i = p.start - 1; i < info.lastDay; i++) {
+				setPeriod(i, info.firstDay);
+			}
+		} else if (p.end) {
+			for (let i = 0; i < p.end; i++) {
+				setPeriod(i, info.firstDay);
+			}
+		}
+	})
 	while (days.length < 42) {
 		days.push(
 			Object.assign(document.createElement('div'), {
@@ -208,6 +255,7 @@ function changeMonth(month) {
 
 	const holidays = getHolidaysByMonth();
 	const events = getEventsByMonth();
+	const periods = getPeriodsByMonth();
 
 	for (let i = 0; i < info.firstDay; i++) {
 		days.push(
@@ -244,6 +292,29 @@ function changeMonth(month) {
 
 		days.push(day);
 	}
+	periods.forEach((p) => {
+		function setPeriod(i, firstday) {
+			days[firstday + i].querySelector('.icon__container').innerHTML +=
+				`<span class="icon_before ${eventToClass(p.type)}"></span>`;
+			if (p.suspension) {
+				days[firstday + i].classList.add('no_classes');
+			}
+		}
+		if (p.start && p.end) {
+			for (let i = p.start - 1; i < p.end; i++) {
+				setPeriod(i, info.firstDay);
+			}
+		} 
+		else if (p.start) {
+			for (let i = p.start - 1; i < info.lastDay; i++) {
+				setPeriod(i, info.firstDay);
+			}
+		} else if (p.end) {
+			for (let i = 0; i < p.end; i++) {
+				setPeriod(i, info.firstDay);
+			}
+		}
+	})
 	while (days.length < 42) {
 		days.push(
 			Object.assign(document.createElement('div'), {
@@ -304,8 +375,11 @@ function displayDay(d) {
 	const events = eventsData.filter(
 		(n) => new Date(n.date).toString() == date.toString(),
 	);
+	const period = periodsData.find(
+		(p) => (new Date(p.start) <= date && new Date(p.end) >= date)
+	);
 
-	if (!holiday) {
+	if (!holiday && !period?.suspension) {
 		days.forEach((n) => {
 			const div = document.createElement('div');
 			div.style.backgroundColor = `#${n.color}`;
@@ -321,11 +395,18 @@ function displayDay(d) {
 			});
 			container.append(div);
 		});
-	} else {
+	} else if (holiday) {
 		const div = document.createElement('div');
 		div.style.backgroundColor = `#D4D4D4`;
 		div.classList.add('dayInfo__line');
 		div.innerHTML = `<span class='dayInfo__name'><span class="icon_before icon_before--big icon_holiday"></span> ${holiday.details}</span><span class='dayInfo__hour'>${holiday.type}</span>`;
+		container.append(div);
+	} 
+	if (period) {
+		const div = document.createElement('div');
+		div.classList.add('dayInfo__line');
+		!period.suspension ? div.style.backgroundColor = '#FAD7C8' : div.style.backgroundColor = '#D4D4D4';
+		div.innerHTML = `<span class='dayInfo__name'><span class="icon_before icon_before--big ${eventToClass(period.type)}"></span> ${period.details}</span>`;
 		container.append(div);
 	}
 }
@@ -359,8 +440,21 @@ fetch('http://localhost:3000/getHorarios') // Fetch to the server (send all the 
 					})
 					.then((data) => {
 						eventsData = data;
-						setCalendar();
-						setMateriaInfo();
+						fetch('http://localhost:3000/getPeriods')
+							.then((response) => {
+								if (!response.ok) {
+									throw new Error('Error en la respuesta de la API');
+								}
+								return response.json();
+							})
+							.then((data) => {
+								periodsData = data;
+								setCalendar();
+								setMateriaInfo();
+							})
+							.catch((error) => {
+								console.error('Error:', error);
+							})
 					})
 					.catch((error) => {
 						console.error('Error:', error);

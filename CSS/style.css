@@ -126,6 +126,10 @@ main {
 	content: '';
 	color: #f08a00;
 }
+.icon_others::before {
+	content: 'O';
+	color: #C2410C;
+}
 
 .icon__container {
 	position: absolute;
