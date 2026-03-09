@@ -62,7 +62,7 @@
 	color: #f08a00;
 }
 .icon_others::before {
-	content: 'O';
+	content: '';
 	color: #c2410c;
 }
 

@@ -42,7 +42,8 @@ main {
 }
 
 .calendar__day--current {
-	border: solid 1px #ff0000;
+	box-sizing: border-box;
+	border: solid 3px #ff0000;
 	cursor: pointer;
 }
 

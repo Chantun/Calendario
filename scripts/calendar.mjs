@@ -175,6 +175,25 @@ function createDiv(className, html = '') {
 	return el;
 }
 
+export function verifyMonth() {
+	// Disable the buttons when required
+	if (month == currentMonth) {
+		previousButton.classList += ' disabled';
+		previousButton.disabled = true;
+	} else if (month == 11) {
+		nextButton.classList += ' disabled';
+		nextButton.disabled = true;
+	}
+	if (month < 11) {
+		nextButton.classList -= ' disabled';
+		nextButton.disabled = false;
+	}
+	if (month > currentMonth) {
+		previousButton.classList -= ' disabled';
+		previousButton.disabled = false;
+	}
+}
+
 // Main
 
 const fetchData = {
@@ -196,7 +215,7 @@ nextButton.addEventListener('click', () => {
 		return;
 	}
 	setCalendar(fetchData, month == currentMonth);
-	parser.verifyMonth();
+	verifyMonth();
 });
 
 const previousButton = document.getElementById('month__button--back');
@@ -208,5 +227,5 @@ previousButton.addEventListener('click', () => {
 		return;
 	}
 	setCalendar(fetchData, month == currentMonth);
-	parser.verifyMonth();
+	verifyMonth();
 });

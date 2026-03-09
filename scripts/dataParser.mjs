@@ -67,22 +67,3 @@ export function eventToClass(num) {
 			return 'icon_others';
 	}
 }
-
-export function verifyMonth() {
-	// Disable the buttons when required
-	if (month == currentMonth) {
-		previousButton.classList += ' disabled';
-		previousButton.disabled = true;
-	} else if (month == 11) {
-		nextButton.classList += ' disabled';
-		nextButton.disabled = true;
-	}
-	if (month < 11) {
-		nextButton.classList -= ' disabled';
-		nextButton.disabled = false;
-	}
-	if (month > currentMonth) {
-		previousButton.classList -= ' disabled';
-		previousButton.disabled = false;
-	}
-}
