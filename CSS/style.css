@@ -105,6 +105,12 @@ main {
 	border: none;
 }
 
+.eventInfo__section {
+	margin: auto;
+	max-width: 980px;
+	margin-top: 50px;
+}
+
 .dayInfo__section {
 	/* border: solid 1px #000; */
 	border-top: solid 2px #636363;
@@ -129,6 +135,37 @@ main {
 }
 
 .dayInfo__hour {
+	font-weight: 700;
+}
+
+.event-list__section {
+	margin: auto;
+	max-width: 980px;
+	margin-top: 50px;
+}
+
+.event-list__section > h2 {
+	text-align: center;
+}
+
+.event__list {
+	padding: 0;
+	list-style: none;
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+}
+.event__list > li {
+	padding: 5px 8px;
+	display: flex;
+}
+
+.event-list__text {
+	padding-left: 10px;
+	flex: 1;
+}
+
+.event-list__text--date {
 	font-weight: 700;
 }
 

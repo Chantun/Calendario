@@ -63,6 +63,8 @@ export function eventToClass(num) {
 			return 'icon_vacation';
 		case 6:
 			return 'icon_mesa';
+		case 8:
+			return 'icon_homework';
 		default:
 			return 'icon_others';
 	}

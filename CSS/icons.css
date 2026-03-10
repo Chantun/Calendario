@@ -61,6 +61,10 @@
 	content: '';
 	color: #f08a00;
 }
+.icon_homework::before {
+	content: '';
+	color: #1f7a8c;
+}
 .icon_others::before {
 	content: '';
 	color: #c2410c;
