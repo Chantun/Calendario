@@ -1,6 +1,7 @@
 import { simpleFetch } from './fetch.mjs';
 import * as parser from './dataParser.mjs';
 import displayDay from './displayDay.mjs';
+import setList from './eventList.mjs';
 
 const date = new Date();
 let month = date.getMonth();
@@ -203,8 +204,9 @@ const fetchData = {
 	periods: await simpleFetch('http://localhost:3000/getPeriods'),
 };
 
-setCalendar(fetchData, false);
+setCalendar(fetchData, true);
 setMateriaInfo(fetchData.horarios);
+setList(fetchData);
 
 const nextButton = document.getElementById('month__button--ahead');
 
