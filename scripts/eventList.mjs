@@ -31,7 +31,7 @@ export default function setList(data) {
 	newData.forEach((n) => {
 		const li = document.createElement('li');
 		li.innerHTML = `
-		<span class="icon_before ${n.eventType == 'holiday' ? 'icon_holiday' : eventToClass(n.type)}"></span>
+		<span class="icon_before icon_before--big ${n.eventType == 'holiday' ? 'icon_holiday' : eventToClass(n.type)}"></span>
 		<span class="event-list__text">${n.details ? n.details : null}</span>
 		<span class="event-list__text--date">${n.sortKey >= 10 ? n.sortKey : '0' + n.sortKey}-${month + 1 >= 10 ? month + 1 : '0' + (month + 1)}-${year}</span>
     `;
@@ -57,7 +57,7 @@ export default function setList(data) {
 	nextMonthData.forEach((n) => {
 		const li = document.createElement('li');
 		li.innerHTML = `
-		<span class="icon_before ${eventToClass(n.type)}"></span>
+		<span class="icon_before icon_before--big ${eventToClass(n.type)}"></span>
 		<span class="event-list__text">${n.details ? n.details : null}</span>
     <span class="event-list__text--date">${n.sortKey >= 10 ? n.sortKey : '0' + n.sortKey}-${(month + 1 >= 10 ? month + 1 : '0', month + 1)}-${year}</span>
     `;

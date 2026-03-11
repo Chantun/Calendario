@@ -6,19 +6,22 @@ body {
 }
 
 main {
-	width: 100%;
-	min-height: 100vh;
 	max-width: 1220px;
 	margin: auto;
 	border: solid 1px #000;
-	padding: 35px 50px;
+	padding: 20px 50px;
+	display: flex;
+	flex-direction: column;
 }
 
 .calendar {
+	box-sizing: content-box;
 	width: 95%;
-	max-width: 950px;
+	max-width: 970px;
+	aspect-ratio: 2 / 1;
 	margin: auto;
-	padding: 4px;
+	margin-top: 20px;
+	padding: 0.3%;
 	border: solid 1px #323232;
 	border-radius: 8px;
 
@@ -28,10 +31,11 @@ main {
 }
 
 .calendar__day {
-	height: 60px;
+	aspect-ratio: 2 / 1;
 	border: solid 1px #626262;
 	border-radius: 4px;
 	position: relative;
+	font-weight: 700;
 }
 
 .calendar__day--past {
@@ -52,7 +56,7 @@ main {
 }
 
 .calendar__day--header {
-	font-weight: 700;
+	font-size: 1em;
 	display: flex;
 	align-items: center;
 	justify-content: center;
@@ -61,7 +65,7 @@ main {
 .calendar__day--num {
 	font-weight: 100;
 	position: absolute;
-	right: 4px;
+	right: 2%;
 	bottom: 0;
 	font-size: 0.9rem;
 	user-select: none;
@@ -69,7 +73,7 @@ main {
 
 .month__contol {
 	max-width: 950px;
-	margin: 50px auto;
+	margin: 10px auto;
 	display: flex;
 	justify-content: center;
 	gap: 10px;
@@ -82,9 +86,11 @@ main {
 
 #materias__info {
 	margin: auto;
+	padding-bottom: 12px;
 	max-width: 950px;
 	display: grid;
 	grid-template-columns: repeat(3, 1fr);
+	border-bottom: solid 1px #646464;
 }
 
 .materia__info--item::before {
@@ -102,21 +108,23 @@ main {
 }
 
 .not_a_day {
-	border: none;
+	border: solid 1px #0000;
 }
 
 .eventInfo__section {
 	margin: auto;
+	width: 100%;
 	max-width: 980px;
-	margin-top: 50px;
+	border: solid 1px #000;
+	border-radius: 6px;
+	padding: 10px 0;
 }
 
 .dayInfo__section {
-	/* border: solid 1px #000; */
-	border-top: solid 2px #636363;
 	margin: auto;
+	width: 100%;
 	max-width: 980px;
-	margin-top: 50px;
+	margin-bottom: 25px;
 }
 
 .dayInfo__title {
@@ -125,6 +133,7 @@ main {
 
 .dayInfo__line {
 	padding: 8px 12px 4px 12px;
+	margin: 0 auto;
 	display: flex;
 }
 
@@ -140,8 +149,8 @@ main {
 
 .event-list__section {
 	margin: auto;
+	width: 100%;
 	max-width: 980px;
-	margin-top: 50px;
 }
 
 .event-list__section > h2 {
@@ -172,3 +181,73 @@ main {
 /* .disabled {
 	background-color: #ff0000;
 } */
+
+@media (max-width: 740px) {
+	main {
+		padding: 8px;
+	}
+
+	.calendar {
+		padding: 2px;
+	}
+
+	.calendar__day--header {
+		font-size: 0.8rem;
+	}
+
+	.dayInfo__section {
+		margin: 10px 0;
+	}
+
+	#materias__info {
+		grid-template-columns: 1fr;
+	}
+
+	h2 {
+		font-size: 1.1rem;
+	}
+
+	.eventInfo__section {
+		box-sizing: border-box;
+		padding: 10px;
+		order: 2;
+	}
+
+	.event-list__section {
+		order: 1;
+		margin-top: 4px;
+	}
+
+	.event-list__section > h2,
+	.month__contol {
+		margin-bottom: 0;
+	}
+}
+
+@media (max-width: 560px) {
+	.calendar__day {
+		aspect-ratio: 5 / 3;
+	}
+
+	.calendar__day--num {
+		right: 2px;
+	}
+
+	.event-list__text,
+	.event-list__text--date,
+	.dayInfo__name,
+	.dayInfo__hour {
+		font-size: 0.9rem;
+	}
+}
+
+@media (max-width: 480px) {
+	.calendar__day {
+		min-width: 30px;
+	}
+
+	.calendar__day--header,
+	.calendar__day--num {
+		font-size: 0.5rem;
+	}
+}
