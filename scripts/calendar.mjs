@@ -127,7 +127,7 @@ function alignCalendar(horarios, days) {
 			!days[i].classList.contains('no_classes')
 		) {
 			// Verifies if the day exists
-			const colors = daysArray[dayNum].map((data) => `#${data.color}`);
+			const colors = daysArray[dayNum].map((d) => `#${d.color}`);
 			if (colors.length === 1) {
 				days[i].style.background = colors[0];
 			} else if (colors.length > 1) {
@@ -206,6 +206,7 @@ const fetchData = {
 
 setCalendar(fetchData, true);
 setMateriaInfo(fetchData.horarios);
+displayDay(fetchData, date.getDate(), month, currentYear);
 setList(fetchData);
 
 const nextButton = document.getElementById('month__button--ahead');
