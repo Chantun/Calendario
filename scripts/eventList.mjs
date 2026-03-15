@@ -102,10 +102,10 @@ function getEventsNextMonth(data, month) {
 function sortAllEvents(data, month) {
 	const today = new Date().getDate();
 	const holidays = getHolidaysByMonth(month, data.holidays)
-		.filter((n) => n.day >= today)
+		.filter((n) => n.day > today)
 		.map((h) => ({ ...h, eventType: 'holiday', sortKey: h.day }));
 	const events = getEventsByMonth(month, data.events)
-		.filter((n) => n.day >= today)
+		.filter((n) => n.day > today)
 		.map((e) => ({
 			...e,
 			eventType: 'event',
@@ -113,7 +113,7 @@ function sortAllEvents(data, month) {
 			details: `${typeToText(e.type)} en ${e.name}`,
 		}));
 	const periods = getPeriodsStartByMonth(month, data.periods)
-		.filter((n) => n.start >= today)
+		.filter((n) => n.start > today)
 		.map((p) => ({ ...p, eventType: 'period', sortKey: p.start }));
 
 	const all = [...holidays, ...events, ...periods];
