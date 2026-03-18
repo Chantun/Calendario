@@ -1,7 +1,7 @@
 function simpleMonthFilter(month, data) {
 	return data.filter((n) => {
 		const date = new Date(n.date);
-		return date.getMonth() == month;
+		return date.getUTCMonth() == month;
 	});
 }
 
@@ -9,7 +9,7 @@ export function getHolidaysByMonth(month, data) {
 	const aux = simpleMonthFilter(month, data);
 	const mappedData = aux.map((n) => {
 		return {
-			day: new Date(n.date).getDate(),
+			day: new Date(n.date).getUTCDate(),
 			type: n.type,
 			details: n.details,
 		};
@@ -21,7 +21,7 @@ export function getEventsByMonth(month, data) {
 	const aux = simpleMonthFilter(month, data);
 	const mappedData = aux.map((n) => {
 		return {
-			day: new Date(n.date).getDate(),
+			day: new Date(n.date).getUTCDate(),
 			type: n.type,
 			name: n.name,
 		};
@@ -33,17 +33,19 @@ export function getPeriodsByMonth(month, data) {
 	const aux = data.filter((n) => {
 		const start = new Date(n.start);
 		const end = new Date(n.end);
-		return (start.getMonth() == month) | (end.getMonth() == month);
+		return (start.getUTCMonth() == month) | (end.getUTCMonth() == month);
 	});
 	const mappedData = aux.map((n) => {
 		return {
 			...n,
 			start:
-				new Date(n.start).getMonth() == month
-					? new Date(n.start).getDate()
+				new Date(n.start).getUTCMonth() == month
+					? new Date(n.start).getUTCDate()
 					: null,
 			end:
-				new Date(n.end).getMonth() == month ? new Date(n.end).getDate() : null,
+				new Date(n.end).getUTCMonth() == month
+					? new Date(n.end).getUTCDate()
+					: null,
 		};
 	});
 	return mappedData;

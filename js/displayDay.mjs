@@ -4,7 +4,7 @@ export default function displayDay(data, d, month, currentYear) {
 	const container = document.getElementById('dayInfo__section');
 	container.innerHTML = '';
 	const date = new Date(currentYear, month, d);
-	const days = data.horarios.filter((n) => n.day === date.getDay());
+	const days = data.horarios.filter((n) => n.day === date.getUTCDay());
 
 	const title = document.createElement('h2');
 	title.classList.add('dayInfo__title');
@@ -12,13 +12,19 @@ export default function displayDay(data, d, month, currentYear) {
 	container.append(title);
 
 	const holiday = data.holidays.find(
-		(h) => new Date(h.date).toString() == date.toString(),
+		(h) =>
+			new Date(h.date).toUTCString().slice(0, 16) ==
+			date.toUTCString().slice(0, 16),
 	);
 	const events = data.events.filter(
-		(n) => new Date(n.date).toString() == date.toString(),
+		(n) =>
+			new Date(n.date).toUTCString().slice(0, 16) ==
+			date.toUTCString().slice(0, 16),
 	);
 	const periods = data.periods.filter(
-		(p) => new Date(p.start) <= date && new Date(p.end) >= date,
+		(p) =>
+			new Date(p.start.replace('Z', '')) <= date &&
+			new Date(p.end.replace('Z', '')) >= date,
 	);
 
 	if (!holiday && !periods?.some((p) => p.suspension)) {

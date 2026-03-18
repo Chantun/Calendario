@@ -10,7 +10,7 @@ const container = document.getElementById('event-list__section');
 // Se le suman los eventos del proximo mes cuyas fechas estan a dos semanas o menos de distancia
 export default function setList(data) {
 	const date = new Date();
-	const month = date.getMonth();
+	const month = date.getUTCMonth();
 	const year = date.getFullYear();
 	const newData = sortAllEvents(data, month);
 	const nextMonthData = getEventsNextMonth(data, month);
@@ -78,8 +78,8 @@ export default function setList(data) {
 function getEventsNextMonth(data, month) {
 	const date = new Date();
 	const daysLeft =
-		new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate() -
-		date.getDate();
+		new Date(date.getFullYear(), date.getUTCMonth() + 1, 0).getUTCDate() -
+		date.getUTCDate();
 	const holidays = getHolidaysByMonth(month + 1, data.holidays)
 		.filter((n) => n.day + daysLeft <= 14)
 		.map((h) => ({ ...h, eventType: 'holiday', sortKey: h.day }));
@@ -100,7 +100,7 @@ function getEventsNextMonth(data, month) {
 }
 
 function sortAllEvents(data, month) {
-	const today = new Date().getDate();
+	const today = new Date().getUTCDate();
 	const holidays = getHolidaysByMonth(month, data.holidays)
 		.filter((n) => n.day > today)
 		.map((h) => ({ ...h, eventType: 'holiday', sortKey: h.day }));
@@ -123,14 +123,14 @@ function sortAllEvents(data, month) {
 function getPeriodsStartByMonth(month, data) {
 	const aux = data.filter((n) => {
 		const start = new Date(n.start);
-		return start.getMonth() == month;
+		return start.getUTCMonth() == month;
 	});
 	const mappedData = aux.map((n) => {
 		return {
 			...n,
 			start:
-				new Date(n.start).getMonth() == month
-					? new Date(n.start).getDate()
+				new Date(n.start).getUTCMonth() == month
+					? new Date(n.start).getUTCDate()
 					: null,
 		};
 	});

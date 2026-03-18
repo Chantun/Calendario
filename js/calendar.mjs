@@ -3,8 +3,8 @@ import * as parser from './dataParser.mjs';
 import displayDay from './displayDay.mjs';
 import setList from './eventList.mjs';
 
-const date = new Date();
-let month = date.getMonth();
+const date = getHoraArgentina();
+let month = date.getUTCMonth();
 const currentMonth = month;
 const currentYear = date.getFullYear();
 
@@ -15,13 +15,17 @@ function setCalendar(data, thisMonth) {
 
 	const newDate = thisMonth ? date : new Date(currentYear, month);
 	const daysInfo = {
-		currentDay: thisMonth ? newDate.getDate() : 0,
-		firstDay: new Date(newDate.getFullYear(), newDate.getMonth(), 1).getDay(),
+		currentDay: thisMonth ? newDate.getUTCDate() : 0,
+		firstDay: new Date(
+			newDate.getFullYear(),
+			newDate.getUTCMonth(),
+			1,
+		).getDay(),
 		lastDay: new Date(
 			newDate.getFullYear(),
-			newDate.getMonth() + 1,
+			newDate.getUTCMonth() + 1,
 			0,
-		).getDate(),
+		).getUTCDate(),
 	};
 
 	const days = [];
@@ -195,6 +199,18 @@ export function verifyMonth() {
 	}
 }
 
+function getHoraArgentina() {
+	// 1. Obtener la hora UTC actual
+	const ahora = new Date();
+
+	// 2. Aplicar el desfase de -3 horas (en milisegundos)
+	// 3 horas * 60 minutos * 60 segundos * 1000 milisegundos
+	const offsetArgentina = -3;
+	const horaArg = new Date(ahora.getTime() + offsetArgentina * 60 * 60 * 1000);
+
+	return horaArg;
+}
+
 // Main
 
 const fetchData = {
@@ -206,7 +222,7 @@ const fetchData = {
 
 setCalendar(fetchData, true);
 setMateriaInfo(fetchData.horarios);
-displayDay(fetchData, date.getDate(), month, currentYear);
+displayDay(fetchData, date.getUTCDate(), month, currentYear);
 setList(fetchData);
 
 const nextButton = document.getElementById('month__button--ahead');

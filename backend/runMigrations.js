@@ -2,10 +2,10 @@ const fs = require('fs');
 const path = require('path');
 const mysql = require('mysql2/promise');
 
-const db = await mysql.createConnection({
+const db = mysql.createPool({
 	host: 'localhost',
-	user: 'root',
-	password: '',
+	user: 'appuser',
+	password: 'password',
 	database: 'calendar',
 });
 
@@ -28,4 +28,4 @@ async function runMigrations() {
 	}
 }
 
-export default runMigrations;
+runMigrations();
