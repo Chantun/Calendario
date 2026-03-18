@@ -22,6 +22,12 @@ export default async function mainPage(user) {
 		} else if (e.target.value == 'event') {
 			const response = addSection.addEvent(user, materias, types);
 			addContent.append(response[0], response[1]);
+		} else if (e.target.value == 'period') {
+			const response = addSection.addPeriod(user, types);
+			addContent.append(response[0], response[1]);
+		} else if (e.target.value == 'holiday') {
+			const response = addSection.addHoliday(user, types);
+			addContent.append(response[0], response[1]);
 		}
 	});
 }

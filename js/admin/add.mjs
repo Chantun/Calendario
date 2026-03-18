@@ -94,3 +94,70 @@ export function addEvent(user, materias, types) {
 
 	return [rowContainer, submit];
 }
+
+export function addPeriod(user, types) {
+	const selectType = document.createElement('select');
+	types.forEach((t) => {
+		selectType.innerHTML += `<option value="${t.id}">${t.name}</option>`;
+	});
+
+	const start = document.createElement('input');
+	start.type = 'date';
+	const end = document.createElement('input');
+	end.type = 'date';
+
+	const details = document.createElement('input');
+	details.type = 'text';
+
+	const suspension = document.createElement('input');
+	suspension.type = 'checkbox';
+
+	const rowContainer = document.createElement('div');
+	rowContainer.classList.add('flex-row');
+
+	rowContainer.append(selectType, start, end, details, suspension);
+
+	const submit = document.createElement('button');
+	submit.textContent = 'Enviar';
+	submit.addEventListener('click', async () => {
+		await simplePost('http://localhost:3000/addPeriod', user, {
+			type: selectType.value,
+			start: start.value,
+			end: end.value,
+			details: details.value,
+			suspension: suspension.checked,
+		});
+	});
+
+	return [rowContainer, submit];
+}
+
+export function addHoliday(user) {
+	const date = document.createElement('input');
+	date.type = 'date';
+
+	const type = document.createElement('input');
+	type.type = 'text';
+	type.placeholder = 'type';
+
+	const details = document.createElement('input');
+	details.type = 'text';
+	details.placeholder = 'details';
+
+	const rowContainer = document.createElement('div');
+	rowContainer.classList.add('flex-row');
+
+	rowContainer.append(date, type, details);
+
+	const submit = document.createElement('button');
+	submit.textContent = 'Enviar';
+	submit.addEventListener('click', async () => {
+		await simplePost('http://localhost:3000/addHoliday', user, {
+			type: type.value,
+			date: date.value,
+			details: details.value,
+		});
+	});
+
+	return [rowContainer, submit];
+}
