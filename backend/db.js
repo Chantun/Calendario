@@ -7,196 +7,140 @@ const conn = mysql.createPool({
 	database: 'calendar',
 });
 
-async function getHorarios() {
+async function getter(query) {
 	try {
-		const [results] =
-			await conn.query(`SELECT H.id AS horario_id, H.materia_id, M.name, M.color, H.day, H.start, H.finish FROM horarios H
-      JOIN materias M ON H.materia_id = M.id
-			WHERE H.active IS TRUE
-			ORDER BY H.start;`);
+		const [results] = await conn.query(query);
 		return results;
 	} catch (err) {
 		console.error(err);
 	}
+}
+
+async function execQuery(query, array = []) {
+	try {
+		await conn.query(query, array);
+	} catch (err) {
+		console.error(err);
+		return err;
+	}
+}
+
+async function getHorarios() {
+	return await getter(`SELECT H.id AS horario_id, H.materia_id, M.name, M.color, H.day, H.start, H.finish FROM horarios H
+    JOIN materias M ON H.materia_id = M.id
+		WHERE H.active IS TRUE
+		ORDER BY H.start`);
 }
 
 async function getHolidays() {
-	try {
-		const [results] = await conn.query(
-			`SELECT * FROM feriados WHERE active IS TRUE;`,
-		);
-		return results;
-	} catch (err) {
-		console.error(err);
-	}
+	return await getter(`SELECT * FROM feriados WHERE active IS TRUE`);
 }
 
 async function getEvents() {
-	try {
-		const [results] =
-			await conn.query(`SELECT M.name, E.type, E.date FROM events E
-			JOIN materias M ON E.materia_id = M.id
-			WHERE E.active IS TRUE;`);
-		return results;
-	} catch (err) {
-		console.error(err);
-	}
+	return await getter(`SELECT M.name, E.type, E.date FROM events E
+		JOIN materias M ON E.materia_id = M.id
+		WHERE E.active IS TRUE`);
 }
 
 async function getPeriods() {
-	try {
-		const [results] = await conn.query(
-			`SELECT type, start, end, details, suspension FROM periods WHERE active IS TRUE;`,
-		);
-		return results;
-	} catch (err) {
-		console.error(err);
-	}
+	return await getter(
+		`SELECT type, start, end, details, suspension FROM periods WHERE active IS TRUE`,
+	);
 }
 
 async function addPeriod(data) {
-	try {
-		await conn.query(
-			`INSERT INTO periods
-			(type, start, end, details, suspension)
+	return await execQuery(
+		`INSERT INTO periods
+			(type, start, end, details, suspension, active)
 			VALUES
-			(?, ?, ?, ?, ?)`,
-			[data.type, data.start, data.end, data.details, data.suspension],
-		);
-	} catch (err) {
-		console.error(err);
-		return err;
-	}
+			(?, ?, ?, ?, ?, TRUE)`,
+		[data.type, data.start, data.end, data.details, data.suspension],
+	);
 }
 
 async function addEvent(data) {
-	try {
-		await conn.query(
-			`INSERT INTO events
-			(materia_id, type, date)
+	return await execQuery(
+		`INSERT INTO events
+			(materia_id, type, date, active)
 			VALUES
-			(?, ?, ?)`,
-			[data.materia, data.type, data.date],
-		);
-	} catch (err) {
-		console.error(err);
-		return err;
-	}
+			(?, ?, ?, TRUE)`,
+		[data.materia, data.type, data.date],
+	);
 }
 
 async function addHoliday(data) {
-	try {
-		await conn.query(
-			`INSERT INTO feriados
-			(details, type, date)
+	return await execQuery(
+		`INSERT INTO feriados
+			(details, type, date, active)
 			VALUES
-			(?, ?, ?)`,
-			[data.details, data.type, data.date],
-		);
-	} catch (err) {
-		console.error(err);
-		return err;
-	}
+			(?, ?, ?, TRUE)`,
+		[data.details, data.type, data.date],
+	);
 }
 
 async function addMateria(data) {
-	try {
-		await conn.query(
-			`INSERT INTO materias
-			(name, color)
+	return await execQuery(
+		`INSERT INTO materias
+			(name, color, active)
 			VALUES
-			(?, ?)`,
-			[data.name, data.color],
-		);
-	} catch (err) {
-		console.error(err);
-		return err;
-	}
+			(?, ?, TRUE)`,
+		[data.name, data.color],
+	);
 }
 
 async function addHorario(data) {
-	try {
-		await conn.query(
-			`INSERT INTO horarios
-			(day, start, finish, materia_id)
+	return await execQuery(
+		`INSERT INTO horarios
+			(day, start, finish, materia_id, active)
 			VALUES
-			(?, ?, ?, ?)`,
-			[data.day, data.start, data.finish, data.materia],
-		);
-	} catch (err) {
-		console.error(err);
-		return err;
-	}
+			(?, ?, ?, ?, TRUE)`,
+		[data.day, data.start, data.finish, data.materia],
+	);
 }
 
 async function setMateria(data) {
-	try {
-		await conn.query(
-			`UPDATE materias
+	return await execQuery(
+		`UPDATE materias
 			SET name = ?, color = ?
 			WHERE id = ?`,
-			[data.name, data.color, data.id],
-		);
-	} catch (err) {
-		console.error(err);
-		return err;
-	}
+		[data.name, data.color, data.id],
+	);
 }
 
 async function setHorario(data) {
-	try {
-		await conn.query(
-			`UPDATE horarios
+	return await execQuery(
+		`UPDATE horarios
 			SET materia_id = ?, day = ?, start = ?, finish = ?
 			WHERE id = ?`,
-			[data.materia, data.day, data.start, data.finish, data.id],
-		);
-	} catch (err) {
-		console.error(err);
-		return err;
-	}
+		[data.materia, data.day, data.start, data.finish, data.id],
+	);
 }
 
 async function setEvent(data) {
-	try {
-		await conn.query(
-			`UPDATE events
+	return await execQuery(
+		`UPDATE events
 			SET materia_id = ?, type = ?, date = ?
 			WHERE id = ?`,
-			[data.materia, data.type, data.date, data.id],
-		);
-	} catch (err) {
-		console.error(err);
-		return err;
-	}
+		[data.materia, data.type, data.date, data.id],
+	);
 }
 
 async function setHoliday(data) {
-	try {
-		await conn.query(
-			`UPDATE feriados
+	return await execQuery(
+		`UPDATE feriados
 			SET date = ?, type = ?, details = ?
 			WHERE id = ?`,
-			[data.date, data.type, data.details, data.id],
-		);
-	} catch (err) {
-		console.error(err);
-		return err;
-	}
+		[data.date, data.type, data.details, data.id],
+	);
 }
 
 async function setPeriod(data) {
-	try {
-		await conn.query(
-			`UPDATE periods
+	return await execQuery(
+		`UPDATE periods
 			SET type = ?, details = ?, start = ?, end = ?, suspension = ?
 			WHERE id = ?`,
-			[data.type, data.details, data.start, data.end, data.suspension, data.id],
-		);
-	} catch (err) {
-		console.error(err);
-		return err;
-	}
+		[data.type, data.details, data.start, data.end, data.suspension, data.id],
+	);
 }
 
 async function toggleActive(table, id) {
@@ -224,19 +168,6 @@ async function toggleActive(table, id) {
 	} catch (err) {
 		console.error(err);
 		return err;
-	}
-}
-
-async function addHolidayScrap(data) {
-	try {
-		await conn.query(
-			`INSERT INTO feriados (date, type, details) VALUES
-		(?, ?, ?)`,
-			[data.date, data.type, data.details],
-		);
-		console.log(`INSERT ${data.date} - ${data.type} - ${data.details}`);
-	} catch (err) {
-		console.error(err);
 	}
 }
 
@@ -276,7 +207,6 @@ async function getAdmin(id) {
 
 module.exports = {
 	getHorarios,
-	addHolidayScrap,
 	getHolidays,
 	getEvents,
 	getPeriods,

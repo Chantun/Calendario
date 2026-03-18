@@ -60,6 +60,24 @@ async function basicAuth(req, res, next) {
 	next();
 }
 
+async function adder(bool, func, data) {
+	if (bool) {
+		return { status: 400, error: 'No data provided.' };
+	}
+	const response = await func(data);
+	if (response) {
+		return { status: 500, response: response };
+	}
+	return { status: 200, response: 'Ok' };
+}
+
+async function setter(bool, func, data) {
+	if (data.id == null) {
+		return { status: 400, error: 'Id is missing.' };
+	}
+	return await adder(bool, func, data);
+}
+
 app.get('/', (req, res) => {
 	res
 		.status(200)
@@ -79,12 +97,13 @@ app.get('/', (req, res) => {
 			'/setPeriod',
 			'/setEvent',
 			'/setHoliday',
+			'/addAdmin',
+			'/login',
 		]);
 });
 
 app.post('/addAdmin', verifyData, async (req, res) => {
 	const body = req.body;
-
 	const psw = await bcrypt.hash(body.password, 12);
 	const result = await db.addAdmin(body.name, psw);
 	console.log(result);
@@ -125,159 +144,112 @@ app.get('/getPeriods', async (req, res) => {
 
 app.post('/addMateria', basicAuth, async (req, res) => {
 	const body = req.body;
-	if (!body.name || !body.color) {
-		return res.status(400).send({ error: 'Data not found.' });
-	}
-	const response = await db.addMateria(body);
-	if (response) {
-		return res.status(500).send({ status: 500, response: response });
-	}
-	res.status(200).send({ status: 200, response: 'Ok' });
+	const result = await adder(!body.name || !body.color, db.addMateria, body);
+	res.status(result.status).send(result);
 });
 
 app.post('/addHorario', basicAuth, async (req, res) => {
 	const body = req.body;
-	if (
+	const result = await adder(
 		body.day == null ||
-		body.start == null ||
-		body.finish == null ||
-		body.materia == null
-	) {
-		return res.status(400).send({ error: 'Data not found.' });
-	}
-	const response = await db.addHorario(body);
-	if (response) {
-		return res.status(500).send({ status: 500, response: response });
-	}
-	res.status(200).send({ status: 200, response: 'Ok' });
+			body.start == null ||
+			body.finish == null ||
+			body.materia == null,
+		db.addHorario,
+		body,
+	);
+	res.status(result.status).send(result);
 });
 
 app.post('/addPeriod', basicAuth, async (req, res) => {
 	const body = req.body;
-	if (
+	const result = await adder(
 		body.type == null ||
-		body.start == null ||
-		body.end == null ||
-		body.details == null ||
-		body.suspension == null
-	) {
-		return res.status(400).send({ error: 'Data not found.' });
-	}
-	const response = await db.addPeriod(body);
-	if (response) {
-		return res.status(500).send({ status: 500, response: response });
-	}
-	res.status(200).send({ status: 200, response: 'Ok' });
+			body.start == null ||
+			body.end == null ||
+			body.details == null ||
+			body.suspension == null,
+		db.addPeriod,
+		body,
+	);
+	res.status(result.status).send(result);
 });
 
 app.post('/addEvent', basicAuth, async (req, res) => {
 	const body = req.body;
-	if (body.materia == null || body.type == null || body.date == null) {
-		return res.status(400).send({ error: 'Data not found.' });
-	}
-	const response = await db.addEvent(body);
-	if (response) {
-		return res.status(500).send({ status: 500, response: response });
-	}
-	res.status(200).send({ status: 200, response: 'Ok' });
+	const result = await adder(
+		body.materia == null || body.type == null || body.date == null,
+		db.addEvent,
+		body,
+	);
+	res.status(result.status).send(result);
 });
 
 app.post('/addHoliday', basicAuth, async (req, res) => {
 	const body = req.body;
-	if (body.details == null || body.type == null || body.date == null) {
-		return res.status(400).send({ error: 'Data not found.' });
-	}
-	const response = await db.addHoliday(body);
-	if (response) {
-		return res.status(500).send({ status: 500, response: response });
-	}
-	res.status(200).send({ status: 200, response: 'Ok' });
+	const result = await adder(
+		body.details == null || body.type == null || body.date == null,
+		db.addHoliday,
+		body,
+	);
+	res.status(result.status).send(result);
 });
 
 app.post('/setMateria', basicAuth, async (req, res) => {
 	const body = req.body;
-	if (body.id == null) {
-		return res.status(400).send({ error: 'Id is missing.' });
-	}
-	if (body.name == null || body.color == null) {
-		return res.status(400).send({ error: 'No data provided.' });
-	}
-	const response = await db.setMateria(body);
-	if (response) {
-		return res.status(500).send({ status: 500, response: response });
-	}
-	res.status(200).send({ status: 200, response: 'Ok' });
+	const result = await setter(
+		body.name == null || body.color == null,
+		db.setMateria,
+		body,
+	);
+	res.status(result.status).send(result);
 });
 
 app.post('/setHorario', basicAuth, async (req, res) => {
 	const body = req.body;
-	if (body.id == null) {
-		return res.status(400).send({ error: 'Id is missing.' });
-	}
-	if (
+	const result = await setter(
 		body.materia == null ||
-		body.day == null ||
-		body.start == null ||
-		body.finish == null
-	) {
-		return res.status(400).send({ error: 'No data provided.' });
-	}
-	const response = await db.setHorario(body);
-	if (response) {
-		return res.status(500).send({ status: 500, response: response });
-	}
-	res.status(200).send({ status: 200, response: 'Ok' });
+			body.day == null ||
+			body.start == null ||
+			body.finish == null,
+		db.setHorario,
+		body,
+	);
+	res.status(result.status).send(result);
 });
 
 app.post('/setEvent', basicAuth, async (req, res) => {
 	const body = req.body;
-	if (body.id == null) {
-		return res.status(400).send({ error: 'Id is missing.' });
-	}
-	if (body.materia == null || body.type == null || body.date == null) {
-		return res.status(400).send({ error: 'No data provided.' });
-	}
-	const response = await db.setEvent(body);
-	if (response) {
-		return res.status(500).send({ status: 500, response: response });
-	}
-	res.status(200).send({ status: 200, response: 'Ok' });
+	const result = await setter(
+		body.materia == null || body.type == null || body.date == null,
+		db.setEvent,
+		body,
+	);
+	res.status(result.status).send(result);
 });
 
 app.post('/setPeriod', basicAuth, async (req, res) => {
 	const body = req.body;
-	if (body.id == null) {
-		return res.status(400).send({ error: 'Id is missing.' });
-	}
-	if (
+	const result = await setter(
 		body.type == null ||
-		body.details == null ||
-		body.start == null ||
-		body.end == null ||
-		body.suspension == null
-	) {
-		return res.status(400).send({ error: 'No data provided.' });
-	}
-	const response = await db.setPeriod(body);
-	if (response) {
-		return res.status(500).send({ status: 500, response: response });
-	}
-	res.status(200).send({ status: 200, response: 'Ok' });
+			body.details == null ||
+			body.start == null ||
+			body.end == null ||
+			body.suspension == null,
+		db.setPeriod,
+		body,
+	);
+	res.status(result.status).send(result);
 });
 
 app.post('/setHoliday', basicAuth, async (req, res) => {
 	const body = req.body;
-	if (body.id == null) {
-		return res.status(400).send({ error: 'Id is missing.' });
-	}
-	if (body.date == null || body.type == null || body.details == null) {
-		return res.status(400).send({ error: 'No data provided.' });
-	}
-	const response = await db.setHoliday(body);
-	if (response) {
-		return res.status(500).send({ status: 500, response: response });
-	}
-	res.status(200).send({ status: 200, response: 'Ok' });
+	const result = await setter(
+		body.date == null || body.type == null || body.details == null,
+		db.setHoliday,
+		body,
+	);
+	res.status(result.status).send(result);
 });
 
 app.post('/toggleActive', basicAuth, async (req, res) => {
