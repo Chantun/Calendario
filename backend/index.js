@@ -83,6 +83,8 @@ app.get('/', (req, res) => {
 		.status(200)
 		.send([
 			'API de aplicacion de calendario academico',
+			'/getTypes',
+			'/getMaterias',
 			'/getHorarios',
 			'/getHolidays',
 			'/getEvents',
@@ -120,6 +122,16 @@ app.post('/login', basicAuth, async (req, res) => {
 	const safeUser = { ...user };
 	delete safeUser.password;
 	return res.status(200).send({ response: 'Ok', data: safeUser });
+});
+
+app.get('/getTypes', async (req, res) => {
+	const results = await db.getTypes();
+	res.status(200).send(results);
+});
+
+app.get('/getMaterias', async (req, res) => {
+	const results = await db.getMaterias();
+	res.status(200).send(results);
 });
 
 app.get('/getHorarios', async (req, res) => {

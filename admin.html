@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Calendario</title>
+		<link rel="icon" type="svg" href="./icon.svg" sizes="16x16" />
+		<link rel="stylesheet" href="./css/style.css" />
+	</head>
+	<body>
+		<div
+			id="authModal"
+			style="
+				display: none;
+				position: fixed;
+				top: 0;
+				left: 0;
+				width: 100%;
+				height: 100%;
+				background: #0008;
+			"
+		>
+			<div
+				style="
+					background: #fff;
+					padding: 20px;
+					width: 300px;
+					margin: 100px auto;
+				"
+			>
+				<h3>Login</h3>
+				<input id="user" type="text" placeholder="Usuario" /><br /><br />
+				<input id="pass" type="password" placeholder="Password" /><br /><br />
+				<button id="send_button">OK</button>
+			</div>
+		</div>
+		<div id="error_section"></div>
+		<main id="main" style="display: none">
+			<section id="add-section">
+				<h2 class="title">Add</h2>
+				<form action="submit">
+					<select name="options" id="add-options">
+						<option value="materia">Materia</option>
+						<option value="horario">Horario</option>
+						<option value="event">Evento</option>
+						<option value="period">Periodo</option>
+						<option value="holiday">Feriado</option>
+					</select>
+				</form>
+				<div id="add-content" class="content"></div>
+			</section>
+			<section id="modify-section">
+				<h2 class="title">Modify</h2>
+				<form action="submit">
+					<select name="options" id="modify-options">
+						<option value="materia">Materia</option>
+						<option value="horario">Horario</option>
+						<option value="event">Evento</option>
+						<option value="period">Periodo</option>
+						<option value="holiday">Feriado</option>
+					</select>
+				</form>
+			</section>
+		</main>
+	</body>
+	<script type="module" src="js/admin/login.mjs"></script>
+</html>

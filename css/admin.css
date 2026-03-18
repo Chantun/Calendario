@@ -1,0 +1,12 @@
+.button__list {
+	list-style: none;
+	display: flex;
+	flex-direction: row;
+	gap: 20px;
+}
+
+.flex-row {
+	display: flex;
+	flex-direction: row;
+	gap: 20px;
+}

@@ -25,6 +25,14 @@ async function execQuery(query, array = []) {
 	}
 }
 
+async function getTypes() {
+	return await getter(`SELECT * FROM events_types`);
+}
+
+async function getMaterias() {
+	return await getter(`SELECT id, name FROM materias`);
+}
+
 async function getHorarios() {
 	return await getter(`SELECT H.id AS horario_id, H.materia_id, M.name, M.color, H.day, H.start, H.finish FROM horarios H
     JOIN materias M ON H.materia_id = M.id
@@ -206,6 +214,8 @@ async function getAdmin(id) {
 }
 
 module.exports = {
+	getTypes,
+	getMaterias,
 	getHorarios,
 	getHolidays,
 	getEvents,

@@ -1,4 +1,4 @@
-import { simpleFetch } from './fetch.mjs';
+import { simpleFetch } from '../fetch.mjs';
 import * as parser from './dataParser.mjs';
 import displayDay from './displayDay.mjs';
 import setList from './eventList.mjs';
