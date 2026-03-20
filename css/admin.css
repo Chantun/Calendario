@@ -10,3 +10,56 @@
 	flex-direction: row;
 	gap: 20px;
 }
+
+.content {
+	width: 90%;
+}
+
+.content--flex {
+	display: flex;
+	flex-direction: row;
+}
+
+.table {
+	flex: 3;
+	border: solid 1px #000;
+}
+
+.row {
+	display: flex;
+	flex-direction: row;
+	cursor: pointer;
+}
+.row:nth-child(even) {
+	background-color: #eee;
+}
+.row:hover {
+	background-color: #dde;
+}
+
+.row--select {
+	background-color: #cce !important;
+	cursor: default;
+}
+
+.row--header {
+	border-bottom: solid 1px #000;
+	background-color: #cce;
+	cursor: default;
+}
+.row--header:hover,
+.row--select:hover {
+	background-color: #cce;
+}
+
+.cell {
+	flex: 1;
+	border-right: solid 1px #000;
+}
+.cell:last-child {
+	border: none;
+}
+
+.edit {
+	flex: 1;
+}

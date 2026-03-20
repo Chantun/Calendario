@@ -30,18 +30,26 @@ async function getTypes() {
 }
 
 async function getMaterias() {
-	return await getter(`SELECT id, name FROM materias`);
+	return await getter(`SELECT * FROM materias`);
 }
 
 async function getHorarios() {
-	return await getter(`SELECT H.id AS horario_id, H.materia_id, M.name, M.color, H.day, H.start, H.finish FROM horarios H
+	return await getter(`SELECT H.id AS horario_id, H.materia_id, M.name, M.color, H.day, H.start, H.finish, H.active FROM horarios H
     JOIN materias M ON H.materia_id = M.id
 		WHERE H.active IS TRUE
 		ORDER BY H.start`);
 }
 
+async function getHorariosPure() {
+	return await getter('SELECT * FROM horarios');
+}
+
 async function getHolidays() {
 	return await getter(`SELECT * FROM feriados WHERE active IS TRUE`);
+}
+
+async function getAllHolidays() {
+	return await getter(`SELECT * FROM feriados`);
 }
 
 async function getEvents() {
@@ -50,10 +58,18 @@ async function getEvents() {
 		WHERE E.active IS TRUE`);
 }
 
+async function getEventsPure() {
+	return await getter('SELECT * FROM events');
+}
+
 async function getPeriods() {
 	return await getter(
 		`SELECT type, start, end, details, suspension FROM periods WHERE active IS TRUE`,
 	);
+}
+
+async function getAllPeriods() {
+	return await getter(`SELECT * FROM periods`);
 }
 
 async function addPeriod(data) {
@@ -217,9 +233,13 @@ module.exports = {
 	getTypes,
 	getMaterias,
 	getHorarios,
+	getHorariosPure,
 	getHolidays,
+	getAllHolidays,
 	getEvents,
+	getEventsPure,
 	getPeriods,
+	getAllPeriods,
 	addEvent,
 	addHoliday,
 	addPeriod,

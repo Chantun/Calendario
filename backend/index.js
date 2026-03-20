@@ -139,8 +139,18 @@ app.get('/getHorarios', async (req, res) => {
 	res.status(200).send(results);
 });
 
+app.get('/getHorariosPure', async (req, res) => {
+	const results = await db.getHorariosPure();
+	res.status(200).send(results);
+});
+
 app.get('/getHolidays', async (req, res) => {
 	const results = await db.getHolidays();
+	res.status(200).send(results);
+});
+
+app.get('/getAllHolidays', async (req, res) => {
+	const results = await db.getAllHolidays();
 	res.status(200).send(results);
 });
 
@@ -149,8 +159,18 @@ app.get('/getEvents', async (req, res) => {
 	res.status(200).send(results);
 });
 
+app.get('/getEventsPure', async (req, res) => {
+	const results = await db.getEventsPure();
+	res.status(200).send(results);
+});
+
 app.get('/getPeriods', async (req, res) => {
 	const results = await db.getPeriods();
+	res.status(200).send(results);
+});
+
+app.get('/getAllPeriods', async (req, res) => {
+	const results = await db.getAllPeriods();
 	res.status(200).send(results);
 });
 
