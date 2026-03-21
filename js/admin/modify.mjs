@@ -2,6 +2,26 @@ import { simpleFetch, simplePost } from '../fetch.mjs';
 
 const API_BASE = 'http://localhost:3000';
 
+function convertTo12Hour(time24) {
+	if (!time24) return '';
+	const [hours, minutes] = time24.split(':');
+	let hour = parseInt(hours);
+	const ampm = hour >= 12 ? 'PM' : 'AM';
+	hour = hour % 12 || 12;
+	return `${hour}:${minutes} ${ampm}`;
+}
+
+function convertTo24Hour(time12) {
+	if (!time12) return '';
+	const match = time12.match(/^(\d{1,2}):(\d{2}) (AM|PM)$/i);
+	if (!match) return time12;
+	let [, hour, minutes, ampm] = match;
+	hour = parseInt(hour);
+	if (ampm.toUpperCase() === 'PM' && hour !== 12) hour += 12;
+	if (ampm.toUpperCase() === 'AM' && hour === 12) hour = 0;
+	return `${hour.toString().padStart(2, '0')}:${minutes}`;
+}
+
 function clearTables() {
 	const modifyTable = document.getElementById('modify-table');
 	const editTable = document.getElementById('edit-table');
@@ -19,16 +39,35 @@ function createInput({
 	step,
 }) {
 	const input = document.createElement('input');
-	input.type = type;
-	if (placeholder) input.placeholder = placeholder;
-	if (type === 'checkbox') input.checked = checked;
-	else input.value = value;
+	if (type === 'time') {
+		input.type = 'text';
+		input.placeholder = 'HH:MM AM/PM';
+		input.value = convertTo12Hour(value);
+	} else {
+		input.type = type;
+		if (placeholder) input.placeholder = placeholder;
+		if (type === 'checkbox') input.checked = checked;
+		else input.value = value;
+	}
 
 	if (min !== undefined) input.min = min;
 	if (max !== undefined) input.max = max;
 	if (step !== undefined) input.step = step;
 
 	return input;
+}
+
+function createSelect(options, value = 0, start = 0) {
+	const select = document.createElement('select');
+	options.forEach((n) => {
+		const option = document.createElement('option');
+		option.value = start;
+		option.textContent = n;
+		select.append(option);
+		start++;
+	});
+	select.value = value;
+	return select;
 }
 
 async function updateActiveState(
@@ -95,16 +134,16 @@ async function editMateria(user, materia) {
 			materia.id,
 			'materias',
 		);
+		const updatedMaterias = await simpleFetch(`${API_BASE}/getMaterias`);
+		modifyMateria(user, updatedMaterias);
 	});
 }
 
 async function editHorario(user, horario) {
-	const day = createInput({
-		type: 'number',
-		value: horario.day,
-		min: 0,
-		max: 6,
-	});
+	const day = createSelect(
+		['Domingo', 'Lunes', 'Martes', 'Miercoles', 'Jueves', 'Viernes', 'Sabado'],
+		horario.day,
+	);
 	const start = createInput({ type: 'time', value: horario.start });
 	const finish = createInput({ type: 'time', value: horario.finish });
 	const active = createInput({ type: 'checkbox', checked: horario.active });
@@ -114,8 +153,8 @@ async function editHorario(user, horario) {
 			id: horario.id,
 			materia: horario.materia_id,
 			day: day.value,
-			start: start.value,
-			finish: finish.value,
+			start: convertTo24Hour(start.value),
+			finish: convertTo24Hour(finish.value),
 		});
 		await updateActiveState(
 			user,
@@ -124,21 +163,21 @@ async function editHorario(user, horario) {
 			horario.id,
 			'horarios',
 		);
+		await modifyHorario(user);
 	});
 }
 
-async function editEvent(user, event) {
-	const materia = createInput({
-		type: 'number',
-		value: event.materia_id,
-		min: 1,
-	});
-	const type = createInput({
-		type: 'number',
-		value: event.type,
-		min: 1,
-		max: 8,
-	});
+async function editEvent(user, event, materias, types) {
+	const materia = createSelect(
+		materias.map((m) => m.name),
+		event.materia_id,
+		1,
+	);
+	const type = createSelect(
+		types.map((t) => t.name),
+		event.type,
+		1,
+	);
 	const date = createInput({ type: 'date', value: event.date.slice(0, 10) });
 	const active = createInput({ type: 'checkbox', checked: event.active });
 
@@ -156,6 +195,7 @@ async function editEvent(user, event) {
 			event.id,
 			'events',
 		);
+		await modifyEvent(user, materias, types);
 	});
 }
 
@@ -179,16 +219,16 @@ async function editHoliday(user, holiday) {
 			holiday.id,
 			'feriados',
 		);
+		await modifyHoliday(user);
 	});
 }
 
-async function editPeriod(user, period) {
-	const type = createInput({
-		type: 'number',
-		value: period.type,
-		min: 1,
-		max: 8,
-	});
+async function editPeriod(user, period, types) {
+	const type = createSelect(
+		types.map((t) => t.name),
+		period.type,
+		1,
+	);
 	const start = createInput({ type: 'date', value: period.start.slice(0, 10) });
 	const end = createInput({ type: 'date', value: period.end.slice(0, 10) });
 	const details = createInput({ type: 'text', value: period.details });
@@ -217,6 +257,7 @@ async function editPeriod(user, period) {
 				period.id,
 				'periods',
 			);
+			await modifyPeriod(user, types);
 		},
 	);
 }
@@ -252,7 +293,7 @@ export async function modifyHorario(user) {
 	modifyTable.append(header, ...rows);
 }
 
-export async function modifyEvent(user) {
+export async function modifyEvent(user, materias, types) {
 	clearTables();
 
 	const events = await simpleFetch(`${API_BASE}/getEventsPure`);
@@ -262,7 +303,7 @@ export async function modifyEvent(user) {
 	const header = createHeader(['Id', 'Materia', 'Type', 'Date', 'Active']);
 	const rows = events.map((e) =>
 		createRow([e.id, e.materia_id, e.type, e.date.slice(0, 10), e.active], () =>
-			editEvent(user, e),
+			editEvent(user, e, materias, types),
 		),
 	);
 
@@ -286,7 +327,7 @@ export async function modifyHoliday(user) {
 	modifyTable.append(header, ...rows);
 }
 
-export async function modifyPeriod(user) {
+export async function modifyPeriod(user, types) {
 	clearTables();
 
 	const periods = await simpleFetch(`${API_BASE}/getAllPeriods`);
@@ -311,7 +352,7 @@ export async function modifyPeriod(user) {
 				p.suspension,
 				p.active,
 			],
-			() => editPeriod(user, p),
+			() => editPeriod(user, p, types),
 		),
 	);
 
