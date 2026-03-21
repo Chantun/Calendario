@@ -87,6 +87,9 @@
 }
 
 .admin-of-admins {
+	display: block;
+	width: 100%;
 	font-weight: 700;
 	color: #3a7;
+	text-align: center;
 }
