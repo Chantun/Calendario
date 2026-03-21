@@ -229,6 +229,10 @@ async function getAdmin(id) {
 	}
 }
 
+async function getAdmins() {
+	return await getter(`SELECT id, name, active FROM admin`);
+}
+
 module.exports = {
 	getTypes,
 	getMaterias,
@@ -253,4 +257,5 @@ module.exports = {
 	toggleActive,
 	addAdmin,
 	getAdmin,
+	getAdmins,
 };

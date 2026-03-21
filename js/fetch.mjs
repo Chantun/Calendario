@@ -15,7 +15,7 @@ export async function simpleFetch(URL) {
 	}
 }
 
-export async function simplePost(URL, auth, body = {}) {
+export async function simplePost(URL, auth = '', body = {}) {
 	try {
 		const response = await fetch(URL, {
 			method: 'POST', // Specify the method

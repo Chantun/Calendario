@@ -8,79 +8,56 @@
 		<link rel="stylesheet" href="./css/style.css" />
 	</head>
 	<body>
-		<div
-			id="authModal"
-			style="
-				display: none;
-				position: fixed;
-				top: 0;
-				left: 0;
-				width: 100%;
-				height: 100%;
-				background: #0008;
-			"
-		>
-			<div
-				style="
-					background: #fff;
-					padding: 20px;
-					width: 300px;
-					margin: 100px auto;
-				"
-			>
+		<div id="authModal">
+			<div id="login-div" class="authModal--div">
 				<h3>Login</h3>
 				<input id="user" type="text" placeholder="Usuario" /><br /><br />
 				<input id="pass" type="password" placeholder="Password" /><br /><br />
-				<button id="send_button">OK</button>
+				<input
+					id="pass2"
+					type="password"
+					placeholder="Confirm Password"
+					style="display: none"
+				/><br />
+				<button id="login_button">OK</button>
+				<button id="send_register" style="display: none">OK</button>
+				<button id="register_button">Register</button>
+				<span class="error_text"></span>
 			</div>
 		</div>
 		<div id="error_section"></div>
 		<main id="main" style="display: none">
 			<section id="add-section">
 				<h2 class="title">Add</h2>
-				<form action="submit">
-					<select name="options" id="add-options" autocomplete="off">
-						<option value="" disabled selected hidden>N/A</option>
-						<option value="materia">Materia</option>
-						<option value="horario">Horario</option>
-						<option value="event">Evento</option>
-						<option value="period">Periodo</option>
-						<option value="holiday">Feriado</option>
-					</select>
-				</form>
+				<select name="options" id="add-options" autocomplete="off">
+					<option value="" disabled selected hidden>N/A</option>
+					<option value="materia">Materia</option>
+					<option value="horario">Horario</option>
+					<option value="event">Evento</option>
+					<option value="period">Periodo</option>
+					<option value="holiday">Feriado</option>
+				</select>
 				<div id="add-content" class="content"></div>
 			</section>
 			<section id="modify-section">
 				<h2 class="title">Modify</h2>
-				<form action="submit">
-					<select name="options" id="modify-options" autocomplete="off">
-						<option value="" disabled selected hidden>N/A</option>
-						<option value="materia">Materia</option>
-						<option value="horario">Horario</option>
-						<option value="event">Evento</option>
-						<option value="period">Periodo</option>
-						<option value="holiday">Feriado</option>
-					</select>
-				</form>
+				<select name="options" id="modify-options" autocomplete="off">
+					<option value="" disabled selected hidden>N/A</option>
+					<option value="materia">Materia</option>
+					<option value="horario">Horario</option>
+					<option value="event">Evento</option>
+					<option value="period">Periodo</option>
+					<option value="holiday">Feriado</option>
+				</select>
 				<div id="modify-content" class="content content--flex">
-					<table id="modify-table" class="table">
-						<!-- <tr class="row row--header">
-							<th class="cell">id</th>
-							<th class="cell">name</th>
-							<th class="cell">color</th>
-						</tr>
-						<tr class="row">
-							<td class="cell">1</td>
-							<td class="cell">Lengua</td>
-							<td class="cell">AA00FF</td>
-						</tr>
-						<tr class="row row--select">
-							<td class="cell">1</td>
-							<td class="cell">Lengua</td>
-							<td class="cell">AA00FF</td>
-						</tr> -->
-					</table>
+					<table id="modify-table" class="table"></table>
 					<div id="edit-table" class="edit"></div>
+				</div>
+			</section>
+			<section class="admin-section">
+				<h2 class="title">Admins</h2>
+				<div id="admin-content" class="content--tiny content--flex">
+					<table id="admin-table" class="table"></table>
 				</div>
 			</section>
 		</main>

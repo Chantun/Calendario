@@ -124,6 +124,11 @@ app.post('/login', basicAuth, async (req, res) => {
 	return res.status(200).send({ response: 'Ok', data: safeUser });
 });
 
+app.post('/getAdmins', basicAuth, async (req, res) => {
+	const results = await db.getAdmins();
+	res.status(200).send(results);
+});
+
 app.get('/getTypes', async (req, res) => {
 	const results = await db.getTypes();
 	res.status(200).send(results);

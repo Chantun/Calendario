@@ -1,6 +1,7 @@
 import { simpleFetch } from '../fetch.mjs';
 import * as addSection from './add.mjs';
 import * as modifySection from './modify.mjs';
+import { adminTable } from './admins.mjs';
 
 export default async function mainPage(user) {
 	const materias = await simpleFetch('http://localhost:3000/getMaterias');
@@ -47,4 +48,6 @@ export default async function mainPage(user) {
 			modifySection.modifyPeriod(user, types);
 		}
 	});
+
+	adminTable(user);
 }
