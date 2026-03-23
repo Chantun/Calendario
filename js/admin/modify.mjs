@@ -22,6 +22,11 @@ function convertTo24Hour(time12) {
 	return `${hour.toString().padStart(2, '0')}:${minutes}`;
 }
 
+function numberToDay(num) {
+	const days = ['Domingo', 'Lunes', 'Martes', 'Miercoles', 'Jueves', 'Viernes', 'Sabado'];
+	return days[num];
+}
+
 function clearTables() {
 	const modifyTable = document.getElementById('modify-table');
 	const editTable = document.getElementById('edit-table');
@@ -57,16 +62,15 @@ function createInput({
 	return input;
 }
 
-function createSelect(options, value = 0, start = 0) {
+function createSelect(options, selected = 0) {
 	const select = document.createElement('select');
 	options.forEach((n) => {
 		const option = document.createElement('option');
-		option.value = start;
-		option.textContent = n;
+		option.value = n.id;
+		option.textContent = n.value;
 		select.append(option);
-		start++;
 	});
-	select.value = value;
+	select.value = selected;
 	return select;
 }
 
@@ -141,7 +145,7 @@ async function editMateria(user, materia) {
 
 async function editHorario(user, horario) {
 	const day = createSelect(
-		['Domingo', 'Lunes', 'Martes', 'Miercoles', 'Jueves', 'Viernes', 'Sabado'],
+		[{id: 0, value: 'Domingo'}, {id: 1, value: 'Lunes'}, {id: 2, value: 'Martes'}, {id: 3, value: 'Miercoles'}, {id: 4, value: 'Jueves'}, {id: 5, value:'Viernes'}, {id:6, value: 'Sabado'}],
 		horario.day,
 	);
 	const start = createInput({ type: 'time', value: horario.start });
@@ -169,14 +173,12 @@ async function editHorario(user, horario) {
 
 async function editEvent(user, event, materias, types) {
 	const materia = createSelect(
-		materias.map((m) => m.name),
+		materias.map((m) => { return {id: m.id, value: m.name}}),
 		event.materia_id,
-		1,
 	);
 	const type = createSelect(
-		types.map((t) => t.name),
+		types.map((t) => { return {id: t.id, value: t.name}}),
 		event.type,
-		1,
 	);
 	const date = createInput({ type: 'date', value: event.date.slice(0, 10) });
 	const active = createInput({ type: 'checkbox', checked: event.active });
@@ -225,7 +227,7 @@ async function editHoliday(user, holiday) {
 
 async function editPeriod(user, period, types) {
 	const type = createSelect(
-		types.map((t) => t.name),
+		types.map((t) => { return {id: t.id, value: t.name}}),
 		period.type,
 		1,
 	);
@@ -272,6 +274,10 @@ export function modifyMateria(user, materias) {
 	const rows = materias.map((m) =>
 		createRow([m.id, m.name, m.color, m.active], () => editMateria(user, m)),
 	);
+	rows.forEach((r) => {
+		const child = r.children[2];
+		child.style.backgroundColor = `#${child.textContent}`;
+	})
 
 	modifyTable.append(header, ...rows);
 }
@@ -285,7 +291,7 @@ export async function modifyHorario(user) {
 
 	const header = createHeader(['Id', 'Day', 'Start', 'Finish', 'Active']);
 	const rows = horarios.map((h) =>
-		createRow([h.id, h.day, h.start, h.finish, h.active], () =>
+		createRow([h.id, numberToDay(h.day), h.start, h.finish, h.active], () =>
 			editHorario(user, h),
 		),
 	);
@@ -302,7 +308,7 @@ export async function modifyEvent(user, materias, types) {
 
 	const header = createHeader(['Id', 'Materia', 'Type', 'Date', 'Active']);
 	const rows = events.map((e) =>
-		createRow([e.id, e.materia_id, e.type, e.date.slice(0, 10), e.active], () =>
+		createRow([e.id, e.materia_name, e.type_name, e.date.slice(0, 10), e.active], () =>
 			editEvent(user, e, materias, types),
 		),
 	);

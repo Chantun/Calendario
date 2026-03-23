@@ -59,7 +59,9 @@ async function getEvents() {
 }
 
 async function getEventsPure() {
-	return await getter('SELECT * FROM events');
+	return await getter(`SELECT E.id, E.materia_id, M.name AS materia_name, E.type, T.name AS type_name, E.date, E.active FROM events E
+		JOIN materias M ON M.id = E.materia_id
+		JOIN events_types T ON T.id = E.type`);
 }
 
 async function getPeriods() {
