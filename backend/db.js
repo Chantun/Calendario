@@ -41,7 +41,8 @@ async function getHorarios() {
 }
 
 async function getHorariosPure() {
-	return await getter('SELECT * FROM horarios');
+	return await getter(`SELECT H.id, H.day, H.materia_id, M.name AS materia, H.start, H.finish, H.active FROM horarios H
+		JOIN materias M ON M.id = H.materia_id`);
 }
 
 async function getHolidays() {

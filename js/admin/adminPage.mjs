@@ -39,7 +39,7 @@ export default async function mainPage(user) {
 		if (e.target.value == 'materia') {
 			modifySection.modifyMateria(user, materias);
 		} else if (e.target.value == 'horario') {
-			modifySection.modifyHorario(user);
+			modifySection.modifyHorario(user, materias);
 		} else if (e.target.value == 'event') {
 			modifySection.modifyEvent(user, materias, types);
 		} else if (e.target.value == 'holiday') {

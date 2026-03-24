@@ -143,19 +143,23 @@ async function editMateria(user, materia) {
 	});
 }
 
-async function editHorario(user, horario) {
+async function editHorario(user, horario, materias) {
 	const day = createSelect(
 		[{id: 0, value: 'Domingo'}, {id: 1, value: 'Lunes'}, {id: 2, value: 'Martes'}, {id: 3, value: 'Miercoles'}, {id: 4, value: 'Jueves'}, {id: 5, value:'Viernes'}, {id:6, value: 'Sabado'}],
 		horario.day,
+	);
+	const materia = createSelect(
+		materias.map((m) => { return {id: m.id, value: m.name}}),
+		horario.materia_id,
 	);
 	const start = createInput({ type: 'time', value: horario.start });
 	const finish = createInput({ type: 'time', value: horario.finish });
 	const active = createInput({ type: 'checkbox', checked: horario.active });
 
-	await renderEditForm(user, [day, start, finish, active], async () => {
+	await renderEditForm(user, [day, materia, start, finish, active], async () => {
 		await simplePost(`${API_BASE}/setHorario`, user, {
 			id: horario.id,
-			materia: horario.materia_id,
+			materia: materia.value,
 			day: day.value,
 			start: convertTo24Hour(start.value),
 			finish: convertTo24Hour(finish.value),
@@ -282,17 +286,17 @@ export function modifyMateria(user, materias) {
 	modifyTable.append(header, ...rows);
 }
 
-export async function modifyHorario(user) {
+export async function modifyHorario(user, materias) {
 	clearTables();
 
 	const horarios = await simpleFetch(`${API_BASE}/getHorariosPure`);
 	const modifyTable = document.getElementById('modify-table');
 	if (!modifyTable) return;
 
-	const header = createHeader(['Id', 'Day', 'Start', 'Finish', 'Active']);
+	const header = createHeader(['Id', 'Day', 'Materia', 'Start', 'Finish', 'Active']);
 	const rows = horarios.map((h) =>
-		createRow([h.id, numberToDay(h.day), h.start, h.finish, h.active], () =>
-			editHorario(user, h),
+		createRow([h.id, numberToDay(h.day), h.materia, h.start, h.finish, h.active], () =>
+			editHorario(user, h, materias),
 		),
 	);
 
