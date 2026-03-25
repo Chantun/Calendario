@@ -1,0 +1,1 @@
+g++ -o migrations.out migrations.cpp -lmysqlcppconn
