@@ -15,7 +15,7 @@ export function addMateria(user) {
 	const submit = document.createElement('button');
 	submit.textContent = 'Enviar';
 	submit.addEventListener('click', async () => {
-		await simplePost('http://localhost:3000/addMateria', user, {
+		await simplePost('/api/addMateria', user, {
 			name: nameInput.value,
 			color: colorInput.value.slice(1).toUpperCase(),
 		});
@@ -52,7 +52,7 @@ export function addHorario(user, materias) {
 	const submit = document.createElement('button');
 	submit.textContent = 'Enviar';
 	submit.addEventListener('click', async () => {
-		await simplePost('http://localhost:3000/addHorario', user, {
+		await simplePost('/api/addHorario', user, {
 			materia: selectMateria.value,
 			day: selectDay.value,
 			start: start.value,
@@ -85,7 +85,7 @@ export function addEvent(user, materias, types) {
 	const submit = document.createElement('button');
 	submit.textContent = 'Enviar';
 	submit.addEventListener('click', async () => {
-		await simplePost('http://localhost:3000/addEvent', user, {
+		await simplePost('/api/addEvent', user, {
 			materia: selectMateria.value,
 			type: selectType.value,
 			date: date.value,
@@ -120,7 +120,7 @@ export function addPeriod(user, types) {
 	const submit = document.createElement('button');
 	submit.textContent = 'Enviar';
 	submit.addEventListener('click', async () => {
-		await simplePost('http://localhost:3000/addPeriod', user, {
+		await simplePost('/api/addPeriod', user, {
 			type: selectType.value,
 			start: start.value,
 			end: end.value,
@@ -152,7 +152,7 @@ export function addHoliday(user) {
 	const submit = document.createElement('button');
 	submit.textContent = 'Enviar';
 	submit.addEventListener('click', async () => {
-		await simplePost('http://localhost:3000/addHoliday', user, {
+		await simplePost('/api/addHoliday', user, {
 			type: type.value,
 			date: date.value,
 			details: details.value,

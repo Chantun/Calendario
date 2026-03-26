@@ -18,7 +18,7 @@ using namespace sql;
 
 // Obtiene las migraciones que ya han sido guardadas en la tabla migrations
 vector<string> getCurrentMigrations(Connection *con) {
-  sql::Statement *stmt = nullptr;
+  Statement *stmt = nullptr;
   vector<string> results;
   try {
     stmt = con->createStatement();
@@ -28,8 +28,8 @@ vector<string> getCurrentMigrations(Connection *con) {
       results.push_back(res->getString("name"));
     }
     delete res;
-  } catch (sql::SQLException &e) {
-    std::cerr << "Error de SQL: " << e.what() << std::endl;
+  } catch (SQLException &e) {
+    cerr << "Error de SQL: " << e.what() << endl;
   }
   delete stmt;
   sort(results.begin(), results.end());
@@ -37,7 +37,7 @@ vector<string> getCurrentMigrations(Connection *con) {
 }
 
 vector<string> getFiles(const string &path) {
-  namespace fs = std::filesystem;
+  namespace fs = filesystem;
   vector<string> files;
   // Busca todos los archivos del directorio y los retorna en un vector
   for (const auto & entry : fs::directory_iterator(path)) {
@@ -54,10 +54,10 @@ vector<string> getDiference(const string &path, Connection *con) {
   vector<string> result;
   vector<string> files = getFiles(path);
   vector<string> applied = getCurrentMigrations(con);
-  std::set_difference(
+  set_difference(
     files.begin(), files.end(),
     applied.begin(), applied.end(),
-    std::back_inserter(result)
+    back_inserter(result)
   );
   return result;
 }
@@ -77,7 +77,7 @@ string getFileContent(const string &path) {
 }
 
 bool runMigration(Connection *con, const string &migration) {
-  sql::Statement *stmt = nullptr;
+  Statement *stmt = nullptr;
   try
   {
     string fullQuery = getFileContent(migration);
@@ -101,14 +101,14 @@ bool runMigration(Connection *con, const string &migration) {
     stmt->execute("INSERT INTO migrations (name) VALUES ('" + migration.substr(migration.find_last_of('/') + 1) + "')");
 
     con->commit();
-    std::cout << "Migración " << migration.substr(migration.find_last_of('/') + 1) << " completada y guardada." << std::endl;
+    cout << "Migración " << migration.substr(migration.find_last_of('/') + 1) << " completada y guardada." << endl;
     con->setAutoCommit(true); // Restaurar comportamiento normal
     delete stmt;
 
     return true;
-  } catch(sql::SQLException &e) {
-    std::cerr << "Error en la migración: " << e.what() << std::endl;
-    std::cerr << "Ejecutando ROLLBACK..." << std::endl;
+  } catch(SQLException &e) {
+    cerr << "Error en la migración: " << e.what() << endl;
+    cerr << "Ejecutando ROLLBACK..." << endl;
     
     con->rollback(); // La DB vuelve al estado exacto de antes de empezar
     
@@ -119,16 +119,15 @@ bool runMigration(Connection *con, const string &migration) {
 }
 
 int main() {
-  const string basePath = "../../migrations/";
+  const string basePath = "/etc/www/app/migrations/";
   try {
     mysql::MySQL_Driver *driver;
 
     // Inicializar el Driver
-    driver = sql::mysql::get_mysql_driver_instance();
+    driver = mysql::get_mysql_driver_instance();
 
     // Crear la conexión (Host, Usuario, Password)
-    unique_ptr<Connection> con(driver->connect("tcp://127.0.0.1:3306", "santiago", "953741"));
-    con->setAutoCommit(false);
+    unique_ptr<Connection> con(driver->connect("tcp://127.0.0.1:3306", "appuser", "password"));
 
     // Ejecuta la primer migacion (000_init.sql) que crea la base de datos
     runMigration(con.get(), basePath + "000_init.sql");
@@ -145,8 +144,8 @@ int main() {
         return 1;
     }
 
-  } catch (sql::SQLException &e) {
-    std::cerr << "Error de SQL: " << e.what() << std::endl;
+  } catch (SQLException &e) {
+    cerr << "Error de SQL: " << e.what() << endl;
   }
 
   return 0;
