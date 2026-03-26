@@ -1,0 +1,2 @@
+ALTER TABLE backup
+ADD UNIQUE (name);

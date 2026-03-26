@@ -1,0 +1,3 @@
+ALTER TABLE events
+ADD details VARCHAR(64)
+NOT NULL DEFAULT '';
