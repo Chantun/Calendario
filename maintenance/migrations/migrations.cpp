@@ -37,11 +37,11 @@ vector<string> getCurrentMigrations(Connection *con) {
 }
 
 bool ends_with(const std::string& str, const std::string& suffix) {
-    if (str.length() >= suffix.length()) {
-        return (0 == str.compare(str.length() - suffix.length(), suffix.length(), suffix));
-    } else {
-        return false;
-    }
+  if (str.length() >= suffix.length()) {
+    return (0 == str.compare(str.length() - suffix.length(), suffix.length(), suffix));
+  } else {
+    return false;
+  }
 }
 
 vector<string> getFiles(const string &path) {
