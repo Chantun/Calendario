@@ -36,13 +36,22 @@ vector<string> getCurrentMigrations(Connection *con) {
   return results;
 }
 
+bool ends_with(const std::string& str, const std::string& suffix) {
+    if (str.length() >= suffix.length()) {
+        return (0 == str.compare(str.length() - suffix.length(), suffix.length(), suffix));
+    } else {
+        return false;
+    }
+}
+
 vector<string> getFiles(const string &path) {
   namespace fs = filesystem;
   vector<string> files;
   // Busca todos los archivos del directorio y los retorna en un vector
   for (const auto & entry : fs::directory_iterator(path)) {
     string fileName = entry.path().filename().string();
-    files.push_back(fileName);
+    if (ends_with(fileName, "sql"))
+      files.push_back(fileName);
   }
   // Ordena el vector antes de retornarlo
   sort(files.begin(), files.end());
@@ -101,7 +110,7 @@ bool runMigration(Connection *con, const string &migration) {
     stmt->execute("INSERT INTO migrations (name) VALUES ('" + migration.substr(migration.find_last_of('/') + 1) + "')");
 
     con->commit();
-    cout << "Migración " << migration.substr(migration.find_last_of('/') + 1) << " completada y guardada." << endl;
+    cout << "Migration " << migration.substr(migration.find_last_of('/') + 1) << " completed and stored." << endl;
     con->setAutoCommit(true); // Restaurar comportamiento normal
     delete stmt;
 
@@ -119,7 +128,7 @@ bool runMigration(Connection *con, const string &migration) {
 }
 
 int main() {
-  const string basePath = "/etc/www/app/migrations/";
+  const string basePath = "./";
   try {
     mysql::MySQL_Driver *driver;
 
@@ -127,7 +136,7 @@ int main() {
     driver = mysql::get_mysql_driver_instance();
 
     // Crear la conexión (Host, Usuario, Password)
-    unique_ptr<Connection> con(driver->connect("tcp://127.0.0.1:3306", "appuser", "password"));
+    unique_ptr<Connection> con(driver->connect("tcp://127.0.0.1:3306", "santiago", "953741"));
 
     // Ejecuta la primer migacion (000_init.sql) que crea la base de datos
     runMigration(con.get(), basePath + "000_init.sql");

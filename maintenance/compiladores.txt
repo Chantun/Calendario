@@ -3,3 +3,7 @@ g++ -o migrations.out migrations.cpp -lmysqlcppconn
 g++ -o backup.out backup.cpp -lmysqlcppconn
 
 g++ -o week.out weekBackup.cpp -lmysqlcppconn
+
+g++ -o monthly.out monthly.cpp -lmysqlcppconn
+
+g++ -o truncate.out truncate.cpp -lmysqlcppconn
