@@ -56,7 +56,6 @@ async function basicAuth(req, res, next) {
 			.status(500)
 			.send({ error: `An error ocurred during authorization ${error}` });
 	}
-
 	next();
 }
 
@@ -302,6 +301,57 @@ app.post('/toggleActive', basicAuth, async (req, res) => {
 		return res.status(500).send({ status: 500, response: response });
 	}
 	res.status(200).send({ status: 200, response: 'Ok' });
+});
+
+app.post('/createBackup', basicAuth, async (req, res) => {
+	const body = req.body;
+	if (body.name == null) {
+		return res.status(400).send({ error: 'Name is missing.' });
+	}
+
+	const util = require('util');
+	const exec = util.promisify(require('child_process').exec);
+
+	const { stdout, stderr } = await exec(
+		`/home/santiago/Escritorio/backups/backup.out ${body.name}`,
+	);
+	console.log('stdout:', stdout);
+	console.log('stderr:', stderr);
+	res.send({ stdout: stdout, stderr: stderr });
+});
+
+app.post('/recovery', basicAuth, async (req, res) => {
+	const body = req.body;
+	if (body.name == null) {
+		return res.status(400).send({ error: 'Name is missing.' });
+	}
+
+	const util = require('util');
+	const exec = util.promisify(require('child_process').exec);
+
+	const { stdout, stderr } = await exec(
+		`/home/santiago/Escritorio/backups/recovery.sh ${body.name}`,
+	);
+	console.log('stdout:', stdout);
+	console.log('stderr:', stderr);
+	res.send({ stdout: stdout, stderr: stderr });
+});
+
+app.post('/deleteBackup', basicAuth, async (req, res) => {
+	const body = req.body;
+	if (body.name == null) {
+		return res.status(400).send({ error: 'Name is missing.' });
+	}
+
+	const util = require('util');
+	const exec = util.promisify(require('child_process').exec);
+
+	const { stdout, stderr } = await exec(
+		`/home/santiago/Escritorio/backups/delete.out ${body.name}`,
+	);
+	console.log('stdout:', stdout);
+	console.log('stderr:', stderr);
+	res.send({ stdout: stdout, stderr: stderr });
 });
 
 app.listen(PORT, () => {

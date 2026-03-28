@@ -50,7 +50,7 @@ vector<string> getFiles(const string &path) {
   // Busca todos los archivos del directorio y los retorna en un vector
   for (const auto & entry : fs::directory_iterator(path)) {
     string fileName = entry.path().filename().string();
-    if (ends_with(fileName, "sql"))
+    if (ends_with(fileName, ".sql"))
       files.push_back(fileName);
   }
   // Ordena el vector antes de retornarlo
