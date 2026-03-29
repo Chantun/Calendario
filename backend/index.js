@@ -88,6 +88,7 @@ app.get('/', (req, res) => {
 			'/getHolidays',
 			'/getEvents',
 			'/getPeriods',
+			'/getBackups',
 			'/addMateria',
 			'/addHorario',
 			'/addPeriod',
@@ -175,6 +176,11 @@ app.get('/getPeriods', async (req, res) => {
 
 app.get('/getAllPeriods', async (req, res) => {
 	const results = await db.getAllPeriods();
+	res.status(200).send(results);
+});
+
+app.get('/getBackups', async (req, res) => {
+	const results = await db.getBackups();
 	res.status(200).send(results);
 });
 

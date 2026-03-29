@@ -236,6 +236,11 @@ async function getAdmins() {
 	return await getter(`SELECT id, name, active FROM admin`);
 }
 
+async function getBackups() {
+	return await getter(`SELECT name, DATE_FORMAT(executed_at, '%Y-%m-%d') AS date, DATE_FORMAT(executed_at, '%H:%i:%S') AS time, temporary FROM backup
+		WHERE deleted_at IS NULL`);
+}
+
 module.exports = {
 	getTypes,
 	getMaterias,
@@ -261,4 +266,5 @@ module.exports = {
 	addAdmin,
 	getAdmin,
 	getAdmins,
+	getBackups,
 };

@@ -1,7 +1,7 @@
 import { simplePost } from '../fetch.mjs';
 import mainPage from './adminPage.mjs';
 const errorContainer = document.getElementById('error_section');
-const API_BASE = '/api';
+const API_BASE = 'http://localhost:3000';
 
 function openAuth() {
 	document.getElementById('authModal').style.display = 'block';

@@ -1,6 +1,6 @@
 import { simpleFetch, simplePost } from '../fetch.mjs';
 
-const API_BASE = '/api';
+const API_BASE = 'http://localhost:3000';
 
 function convertTo12Hour(time24) {
 	if (!time24) return '';

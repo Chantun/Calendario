@@ -214,10 +214,10 @@ function getHoraArgentina() {
 // Main
 
 const fetchData = {
-	horarios: await simpleFetch('/api/getHorarios'),
-	holidays: await simpleFetch('/api/getHolidays'),
-	events: await simpleFetch('/api/getEvents'),
-	periods: await simpleFetch('/api/getPeriods'),
+	horarios: await simpleFetch('http://localhost:3000/getHorarios'),
+	holidays: await simpleFetch('http://localhost:3000/getHolidays'),
+	events: await simpleFetch('http://localhost:3000/getEvents'),
+	periods: await simpleFetch('http://localhost:3000/getPeriods'),
 };
 
 setCalendar(fetchData, true);

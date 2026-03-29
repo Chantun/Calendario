@@ -1,6 +1,6 @@
 import { simplePost } from '../fetch.mjs';
 
-const API_BASE = '/api';
+const API_BASE = 'http://localhost:3000';
 
 export async function adminTable(user) {
 	const admins = await simplePost(`${API_BASE}/getAdmins`, user);

@@ -36,7 +36,7 @@ bool createBackup(string &name, string &path) {
   string password = "953741";
   string db = "calendar";
 
-  string command = "mysqldump -u " + user + " -p" + password + " " + db + " > " + path + name + ".sql";
+  string command = "mysqldump -u " + user + " -p" + password + " " + db + " --ignore-table=calendar.backup " + " > " + path + name + ".sql";
 
   int resultado = system(command.c_str());
 
