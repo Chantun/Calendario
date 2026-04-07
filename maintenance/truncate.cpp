@@ -11,7 +11,7 @@ using namespace std;
 using namespace sql;
 
 int main() {
-  string path = "/home/santiago/Escritorio/backups/";
+  string path = "/home/ubuntu/maintenance/";
 
   auto t = time(nullptr);
   auto tm = *localtime(&t);
@@ -25,7 +25,7 @@ int main() {
   
   mysql::MySQL_Driver *driver;
   driver = mysql::get_mysql_driver_instance();
-  unique_ptr<Connection> con(driver->connect("tcp://127.0.0.1:3306", "santiago", "953741"));
+  unique_ptr<Connection> con(driver->connect("tcp://127.0.0.1:3306", "appuser", "password"));
 
   try {
     unique_ptr<Statement> stmt(con->createStatement());

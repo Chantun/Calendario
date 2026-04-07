@@ -1,10 +1,10 @@
 #!/bin/bash
 
 # Configuración
-USER="santiago"
-PASS="953741"
+USER="appuser"
+PASS="password"
 DB="calendar"
-BACKUP_DIR="/home/santiago/Escritorio/backups/"
+BACKUP_DIR="/home/ubuntu/maintenance/backups/"
 
 # 1. Validar que se pasó un nombre como argumento
 if [ -z "$1" ]; then

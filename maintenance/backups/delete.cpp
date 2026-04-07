@@ -77,7 +77,7 @@ bool verifyBackup(string &path, string &name, string &today, Statement *stmt) {
 }
 
 int main(int argc, char *argv[]) {
-  string path = "/home/santiago/Escritorio/backups/";
+  string path = "/home/ubuntu/maintenance/backups/";
   auto t = time(nullptr);
   auto tm = *localtime(&t);
   stringstream time;
@@ -91,7 +91,7 @@ int main(int argc, char *argv[]) {
 
     driver = mysql::get_mysql_driver_instance();
 
-    unique_ptr<Connection> con(driver->connect("tcp://127.0.0.1:3306", "santiago", "953741"));
+    unique_ptr<Connection> con(driver->connect("tcp://127.0.0.1:3306", "appuser", "password"));
     con->setSchema("calendar");
 
     unique_ptr<Statement> stmt(con->createStatement());

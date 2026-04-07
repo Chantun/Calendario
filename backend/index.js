@@ -319,7 +319,7 @@ app.post('/createBackup', basicAuth, async (req, res) => {
 	const exec = util.promisify(require('child_process').exec);
 
 	const { stdout, stderr } = await exec(
-		`/home/santiago/Escritorio/backups/backup.out ${body.name}`,
+		`/home/ubuntu/maintenance/backup.out ${body.name}`,
 	);
 	console.log('stdout:', stdout);
 	console.log('stderr:', stderr);
@@ -336,7 +336,7 @@ app.post('/recovery', basicAuth, async (req, res) => {
 	const exec = util.promisify(require('child_process').exec);
 
 	const { stdout, stderr } = await exec(
-		`/home/santiago/Escritorio/backups/recovery.sh ${body.name}`,
+		`/home/ubuntu/maintenance/recovery.sh ${body.name}`,
 	);
 	console.log('stdout:', stdout);
 	console.log('stderr:', stderr);
@@ -353,7 +353,7 @@ app.post('/deleteBackup', basicAuth, async (req, res) => {
 	const exec = util.promisify(require('child_process').exec);
 
 	const { stdout, stderr } = await exec(
-		`/home/santiago/Escritorio/backups/delete.out ${body.name}`,
+		`/home/ubuntu/maintenance/delete.out ${body.name}`,
 	);
 	console.log('stdout:', stdout);
 	console.log('stderr:', stderr);

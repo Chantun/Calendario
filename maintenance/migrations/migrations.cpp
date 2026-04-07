@@ -128,7 +128,7 @@ bool runMigration(Connection *con, const string &migration) {
 }
 
 int main() {
-  const string basePath = "./";
+  const string basePath = "/home/ubuntu/maintenance/migrations";
   try {
     mysql::MySQL_Driver *driver;
 
@@ -136,7 +136,7 @@ int main() {
     driver = mysql::get_mysql_driver_instance();
 
     // Crear la conexión (Host, Usuario, Password)
-    unique_ptr<Connection> con(driver->connect("tcp://127.0.0.1:3306", "santiago", "953741"));
+    unique_ptr<Connection> con(driver->connect("tcp://127.0.0.1:3306", "appuser", "password"));
 
     // Ejecuta la primer migacion (000_init.sql) que crea la base de datos
     runMigration(con.get(), basePath + "000_init.sql");

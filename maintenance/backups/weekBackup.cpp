@@ -76,7 +76,8 @@ bool createBackup(string &path, string &today) {
 }
 
 int main() {
-  string path = "/home/santiago/Escritorio/backups/";
+  string dirPath = "/home/ubuntu/maintenance/backups/";
+  string executePath = "/home/ubuntu/maintenance/";
   auto t = time(nullptr);
   auto tm = *localtime(&t);
   stringstream timeName;
@@ -90,13 +91,13 @@ int main() {
 
     driver = mysql::get_mysql_driver_instance();
 
-    unique_ptr<Connection> con(driver->connect("tcp://127.0.0.1:3306", "santiago", "953741"));
+    unique_ptr<Connection> con(driver->connect("tcp://127.0.0.1:3306", "appuser", "password"));
     con->setSchema("calendar");
 
     unique_ptr<Statement> stmt(con->createStatement());
-    verifyBackups(path, todayStamp, stmt.get());
+    verifyBackups(dirPath, todayStamp, stmt.get());
 
-    bool res = createBackup(path, todayName);
+    bool res = createBackup(executePath, todayName);
 
   } catch (SQLException &e) {
     cerr << "SQL Error: " << e.what() << endl;
