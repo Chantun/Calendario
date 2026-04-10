@@ -24,6 +24,7 @@ export function getEventsByMonth(month, data) {
 			day: new Date(n.date).getUTCDate(),
 			type: n.type,
 			name: n.name,
+			details: n.details,
 		};
 	});
 	return mappedData;

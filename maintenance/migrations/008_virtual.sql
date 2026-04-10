@@ -1,0 +1,3 @@
+ALTER TABLE horarios
+ADD is_virtual BOOL
+NOT NULL DEFAULT FALSE;

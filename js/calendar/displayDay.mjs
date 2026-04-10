@@ -7,7 +7,7 @@ export default function displayDay(data, d, month, currentYear) {
 	const days = data.horarios.filter((n) => n.day === date.getUTCDay());
 
 	const title = document.createElement('h2');
-	title.classList.add('dayInfo__title');
+	title.classList.add('title', 'dayInfo__title');
 	title.textContent = `${d}-${month + 1}-${currentYear}`;
 	container.append(title);
 
@@ -29,35 +29,40 @@ export default function displayDay(data, d, month, currentYear) {
 
 	if (!holiday && !periods?.some((p) => p.suspension)) {
 		days.forEach((n) => {
-			const div = document.createElement('div');
-			div.style.backgroundColor = `#${n.color}`;
-			div.classList.add('dayInfo__line');
-			div.innerHTML = `<span class='dayInfo__name'> ${n.name}</span><span class='dayInfo__hour'>${n.start.split(':', 2).join(':')} - ${n.finish.split(':', 2).join(':')}</span>`;
+			const ul = document.createElement('ul');
+			ul.classList.add('dayInfo__list');
+			ul.style.borderLeft = `solid 5px #${n.color}`;
+			const first = document.createElement('li');
+			first.classList.add('dayInfo');
+			first.innerHTML = `<span class='dayInfo__name'> ${n.name}</span><span class='title dayInfo__hour'>${n.start.split(':', 2).join(':')} - ${n.finish.split(':', 2).join(':')}</span>`;
+			ul.append(first);
 			events.forEach((m) => {
 				if (n.name == m.name) {
 					const iconSpan = document.createElement('span');
 					iconSpan.classList.add('icon_before', 'icon_before--big');
 					iconSpan.classList.add(parser.eventToClass(m.type));
-					div.querySelector('.dayInfo__name').prepend(iconSpan);
+					const li = document.createElement('li');
+					li.classList.add('day-event');
+					li.textContent = m.details;
+					li.prepend(iconSpan);
+					ul.append(li);
 				}
 			});
-			container.append(div);
+			container.append(ul);
 		});
 	} else if (holiday) {
 		const div = document.createElement('div');
-		div.style.backgroundColor = `#D4D4D4`;
-		div.classList.add('dayInfo__line');
-		div.innerHTML = `<span class='dayInfo__name'><span class="icon_before icon_before--big icon_holiday"></span> ${holiday.details}</span><span class='dayInfo__hour'>${holiday.type}</span>`;
+		div.classList.add('dayInfo__list', 'dayInfo', 'dayInfo--padding');
+		div.style.borderLeft = `solid 5px #A4A4A4`;
+		div.innerHTML = `<span class="icon_before icon_before--big icon_holiday"></span><span class='dayInfo__name'> ${holiday.details}</span><span class="title dayInfo__hour">${holiday.type}</span>`;
 		container.append(div);
 	}
 	if (periods) {
 		periods.forEach((p) => {
 			const div = document.createElement('div');
-			div.classList.add('dayInfo__line');
-			!p.suspension
-				? (div.style.backgroundColor = '#FAD7C8')
-				: (div.style.backgroundColor = '#D4D4D4');
-			div.innerHTML = `<span class='dayInfo__name'><span class="icon_before icon_before--big ${parser.eventToClass(p.type)}"></span> ${p.details}</span>`;
+			div.classList.add('dayInfo__list', 'dayInfo', 'dayInfo--padding');
+			div.style.borderLeft = `solid 5px ${!p.suspension ? '#d2a87d' : '#A4A4A4'}`;
+			div.innerHTML = `<span class="icon_before icon_before--big ${parser.eventToClass(p.type)}"></span><span class='dayInfo__name'> ${p.details}</span>`;
 			container.append(div);
 		});
 	}

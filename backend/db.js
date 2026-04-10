@@ -34,7 +34,7 @@ async function getMaterias() {
 }
 
 async function getHorarios() {
-	return await getter(`SELECT H.id AS horario_id, H.materia_id, M.name, M.color, H.day, H.start, H.finish, H.active FROM horarios H
+	return await getter(`SELECT H.id AS horario_id, H.materia_id, M.name, M.color, H.day, H.start, H.finish, H.is_virtual, H.active FROM horarios H
     JOIN materias M ON H.materia_id = M.id
 		WHERE H.active IS TRUE
 		ORDER BY H.start`);
@@ -54,7 +54,7 @@ async function getAllHolidays() {
 }
 
 async function getEvents() {
-	return await getter(`SELECT M.name, E.type, E.date FROM events E
+	return await getter(`SELECT M.name, E.type, E.date, E.details FROM events E
 		JOIN materias M ON E.materia_id = M.id
 		WHERE E.active IS TRUE`);
 }

@@ -15,7 +15,7 @@ export default function setList(data) {
 	const newData = sortAllEvents(data, month);
 	const nextMonthData = getEventsNextMonth(data, month);
 
-	container.innerHTML += `<h2>Proximos eventos de ${date.toLocaleString(
+	container.innerHTML += `<h2 class="title dayInfo__title">Proximos eventos de ${date.toLocaleString(
 		'es-ES',
 		{
 			month: 'long',
@@ -30,19 +30,20 @@ export default function setList(data) {
 
 	newData.forEach((n) => {
 		const li = document.createElement('li');
+		li.classList.add('event-list__item');
 		li.innerHTML = `
 		<span class="icon_before icon_before--big ${n.eventType == 'holiday' ? 'icon_holiday' : eventToClass(n.type)}"></span>
-		<span class="event-list__text">${n.details ? n.details : null}</span>
-		<span class="event-list__text--date">${n.sortKey >= 10 ? n.sortKey : '0' + n.sortKey}-${month + 1 >= 10 ? month + 1 : '0' + (month + 1)}-${year}</span>
+		<span class="dayInfo">${n.details ? n.details : null}</span>
+		<span class="title dayInfo dayInfo__hour">${n.sortKey >= 10 ? n.sortKey : '0' + n.sortKey}-${month + 1 >= 10 ? month + 1 : '0' + (month + 1)}-${year}</span>
     `;
 
 		if (n.eventType == 'holiday' || (n.eventType == 'period' && n.suspension)) {
-			li.style.backgroundColor = '#D4D4D4';
+			li.style.borderLeft = 'solid 5px #A4A4A4';
 		} else if (n.eventType == 'period') {
-			li.style.backgroundColor = '#FAD7C8';
+			li.style.borderLeft = 'solid 5px #d2a87d';
 		}
 		if (n.eventType == 'event') {
-			li.style.backgroundColor = `#${data.horarios.find((h) => h.name == n.name).color}`;
+			li.style.borderLeft = `solid 5px #${data.horarios.find((h) => h.name == n.name).color}`;
 		}
 		monthList.append(li);
 	});
@@ -52,23 +53,23 @@ export default function setList(data) {
 		return;
 	}
 
-	container.innerHTML += `<h2>Proximos eventos de las siguienes semanas</h2>`;
+	container.innerHTML += `<h2 class="title dayInfo__title">Proximos eventos de las siguienes semanas</h2>`;
 
 	nextMonthData.forEach((n) => {
 		const li = document.createElement('li');
 		li.innerHTML = `
 		<span class="icon_before icon_before--big ${eventToClass(n.type)}"></span>
-		<span class="event-list__text">${n.details ? n.details : null}</span>
-    <span class="event-list__text--date">${n.sortKey >= 10 ? n.sortKey : '0' + n.sortKey}-${(month + 1 >= 10 ? month + 1 : '0', month + 1)}-${year}</span>
+		<span class="dayInfo">${n.details ? n.details : null}</span>
+    <span class="title dayInfo dayInfo__hour">${n.sortKey >= 10 ? n.sortKey : '0' + n.sortKey}-${(month + 1 >= 10 ? month + 1 : '0', month + 1)}-${year}</span>
     `;
 
 		if (n.eventType == 'holiday' || (n.eventType == 'period' && n.suspension)) {
-			li.style.backgroundColor = '#D4D4D4';
+			li.style.borderLeft = 'solid 5px #A4A4A4';
 		} else if (n.eventType == 'period') {
-			li.style.backgroundColor = '#FAD7C8';
+			li.style.borderLeft = 'solid 5px #d2a87d';
 		}
 		if (n.eventType == 'event') {
-			li.style.backgroundColor = `#${data.horarios.find((h) => h.name == n.name).color}`;
+			li.style.borderLeft = `solid 5px #${data.horarios.find((h) => h.name == n.name).color}`;
 		}
 		nextMonthList.append(li);
 	});
@@ -89,7 +90,7 @@ function getEventsNextMonth(data, month) {
 			...e,
 			eventType: 'event',
 			sortKey: e.day,
-			details: `${typeToText(e.type)} en ${e.name}`,
+			details: `${e.details} en ${e.name}`,
 		}));
 	const periods = getPeriodsStartByMonth(month + 1, data.periods)
 		.filter((n) => n.start + daysLeft <= 14)
@@ -110,7 +111,7 @@ function sortAllEvents(data, month) {
 			...e,
 			eventType: 'event',
 			sortKey: e.day,
-			details: `${typeToText(e.type)} en ${e.name}`,
+			details: `${e.details} en ${e.name}`,
 		}));
 	const periods = getPeriodsStartByMonth(month, data.periods)
 		.filter((n) => n.start > today)
@@ -135,17 +136,4 @@ function getPeriodsStartByMonth(month, data) {
 		};
 	});
 	return mappedData;
-}
-
-function typeToText(num) {
-	switch (num) {
-		case 1:
-			return 'Paro docente';
-		case 2:
-			return 'Exposicion';
-		case 3:
-			return 'Parcial';
-		case 4:
-			return 'Recuperatorio';
-	}
 }

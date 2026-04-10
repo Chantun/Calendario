@@ -8,52 +8,68 @@
 		<link rel="stylesheet" href="css/style.css" />
 	</head>
 	<body>
+		<aside class="list-details">
+			<ul class="list-details--ul">
+				<li class="title dayInfo__title list-details--title">Modalidades</li>
+				<li class="modality--li">
+					<span class="modality modality--presential">Presencial</span>
+				</li>
+				<li class="modality--li">
+					<span class="modality modality--virtual">Virtual</span>
+				</li>
+			</ul>
+			<ul id="materias__info" class="list-details--ul">
+				<li class="title dayInfo__title list-details--title">Materias</li>
+			</ul>
+			<ul class="list-details--ul">
+				<li class="title dayInfo__title list-details--title">Iconos</li>
+				<li class="icon_before icon_before--big icon__item icon_holiday">
+					Feriado
+				</li>
+				<li class="icon_before icon_before--big icon__item icon_vacation">
+					Vacaciones
+				</li>
+				<li class="icon_before icon_before--big icon__item icon_expo">
+					Presentacion
+				</li>
+				<li class="icon_before icon_before--big icon__item icon_mesa">
+					Mesa de examen
+				</li>
+				<li class="icon_before icon_before--big icon__item icon_exam">
+					Parcial
+				</li>
+				<li class="icon_before icon_before--big icon__item icon_recu">
+					Recuperatorio
+				</li>
+				<li class="icon_before icon_before--big icon__item icon_homework">
+					Entrega de tp
+				</li>
+				<li class="icon_before icon_before--big icon__item icon_paro">Paro</li>
+				<li class="icon_before icon_before--big icon__item icon_others">
+					Otros
+				</li>
+			</ul>
+		</aside>
 		<main>
 			<section class="calendar__section">
-				<div class="calendar" id="calendar"></div>
 				<div class="month__contol">
-					<button id="month__button--back" class="disabled" disabled="true">
+					<button
+						id="month__button--back"
+						class="month__button disabled"
+						disabled="true"
+					>
 						<
 					</button>
 					<span id="month__name" class="month__name"></span>
-					<button id="month__button--ahead">></button>
+					<button id="month__button--ahead" class="month__button">></button>
 				</div>
+				<div class="calendar" id="calendar"></div>
 			</section>
 			<section id="dayInfo__section" class="dayInfo__section"></section>
-			<section class="eventInfo__section">
-				<div id="materias__info"></div>
-				<div class="icons__info">
-					<span class="icon_before icon_before--big icon__item icon_holiday">
-						Feriado</span
-					>
-					<span class="icon_before icon_before--big icon__item icon_paro">
-						Paro docente</span
-					>
-					<span class="icon_before icon_before--big icon__item icon_expo">
-						Presentacion</span
-					>
-					<span class="icon_before icon_before--big icon__item icon_mesa">
-						Mesas de examen</span
-					>
-					<span class="icon_before icon_before--big icon__item icon_exam">
-						Parcial</span
-					>
-					<span class="icon_before icon_before--big icon__item icon_recu">
-						Recuperatorio</span
-					>
-					<span class="icon_before icon_before--big icon__item icon_vacation">
-						Vacaciones</span
-					>
-					<span class="icon_before icon_before--big icon__item icon_homework">
-						Entrega tp</span
-					>
-					<span class="icon_before icon_before--big icon__item icon_others">
-						Otros</span
-					>
-				</div>
-			</section>
 			<section id="event-list__section" class="event-list__section"></section>
+			<!-- <span class="banana icon_banana"></span> -->
 		</main>
+		<aside class="list-details"></aside>
 	</body>
 	<script type="module" src="js/calendar/calendar.mjs"></script>
 </html>

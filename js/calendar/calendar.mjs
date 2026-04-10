@@ -45,13 +45,13 @@ function setCalendar(data, thisMonth) {
 		const day = Object.assign(
 			createDiv(
 				i == daysInfo.currentDay
-					? 'calendar__day calendar__day--current'
+					? 'calendar__day calendar__day--current calendar__day--selected'
 					: i < daysInfo.currentDay
 						? 'calendar__day'
 						: 'calendar__day calendar__day--upcoming',
 				i < daysInfo.currentDay
-					? `<div class="calendar__day--past"></div><span class="calendar__day--num">${i}</span><div class="icon__container"></div>`
-					: `<span class="calendar__day--num">${i}</span><div class="icon__container"></div>`,
+					? `<div class="calendar__day--past"></div><div class="num__container"><span class="calendar__day--num">${i}</span></div><div class="class__container"></div><div class="icon__container"></div>`
+					: `<div class="num__container"><span class="calendar__day--num">${i}</span></div><div class="class__container"></div><div class="icon__container"></div>`,
 			),
 		);
 
@@ -64,10 +64,18 @@ function setCalendar(data, thisMonth) {
 			const eventDay = specialDays.events.filter((n) => n.day === i);
 			eventDay.forEach((n) => {
 				container.innerHTML += `<span class="icon_before ${parser.eventToClass(n.type)}"></span>`;
+				if (n.type == 1) {
+					const actual = day.dataset.paros ? JSON.parse(day.dataset.paros) : [];
+					actual.push(n.name);
+					day.dataset.paros = JSON.stringify(actual);
+				}
 			});
 		}
 
 		day.addEventListener('click', () => {
+			const previous = document.querySelector('.calendar__day--selected');
+			if (previous) previous.classList.remove('calendar__day--selected');
+			day.classList.add('calendar__day--selected');
 			displayDay(data, i, month, currentYear);
 		});
 
@@ -103,17 +111,17 @@ function setCalendar(data, thisMonth) {
 
 	alignCalendar(data.horarios, days);
 
-	calendar.innerHTML = `<div class="calendar__day calendar__day--header">Domingo</div>
-				<div class="calendar__day calendar__day--header">Lunes</div>
-				<div class="calendar__day calendar__day--header">Martes</div>
-				<div class="calendar__day calendar__day--header">Miercoles</div>
-				<div class="calendar__day calendar__day--header">Jueves</div>
-				<div class="calendar__day calendar__day--header">Viernes</div>
-				<div class="calendar__day calendar__day--header">Sabado</div>`; // Genera la primer linea del calendario
+	calendar.innerHTML = `<div class="calendar__header">Domingo</div>
+				<div class="calendar__header">Lunes</div>
+				<div class="calendar__header">Martes</div>
+				<div class="calendar__header">Miercoles</div>
+				<div class="calendar__header">Jueves</div>
+				<div class="calendar__header">Viernes</div>
+				<div class="calendar__header">Sabado</div>`; // Genera la primer linea del calendario
 	calendar.append(...days); // Envia los dias al html
-	monthSpan.textContent = newDate.toLocaleString('es-ES', {
-		month: 'long',
-	});
+	const monthStr = newDate.toLocaleString('es-ES', { month: 'long' });
+	monthSpan.textContent =
+		String(monthStr).charAt(0).toUpperCase() + String(monthStr).slice(1);
 }
 
 // Sincronize the calendar with horariosData
@@ -130,20 +138,25 @@ function alignCalendar(horarios, days) {
 			!days[i].classList.contains('not_a_day') &&
 			!days[i].classList.contains('no_classes')
 		) {
-			// Verifies if the day exists
-			const colors = daysArray[dayNum].map((d) => `#${d.color}`);
-			if (colors.length === 1) {
-				days[i].style.background = colors[0];
-			} else if (colors.length > 1) {
-				// build a horizontal gradient with abrupt transitions
-				const segment = 100 / colors.length;
-				const stops = colors
-					.map(
-						(c, idx) => `${c} ${idx * segment}% , ${c} ${(idx + 1) * segment}%`,
-					)
-					.join(', ');
-				days[i].style.background = `linear-gradient(to right, ${stops})`;
-			}
+			const exeptions = days[i].dataset.paros
+				? JSON.parse(days[i].dataset.paros)
+				: [];
+			const colors = daysArray[dayNum].flatMap((d) => {
+				if (!exeptions.includes(d.name)) {
+					return { color: `#${d.color}`, virtual: d.is_virtual };
+				} else {
+					return [];
+				}
+			});
+			const container = days[i].querySelector('.class__container');
+			colors.forEach((c) => {
+				const classDot = document.createElement('span');
+				classDot.classList.add('class-dot');
+				c.virtual
+					? (classDot.style.border = `solid ${c.color}`)
+					: (classDot.style.backgroundColor = c.color);
+				container.append(classDot);
+			});
 		}
 		dayNum < 6 ? dayNum++ : (dayNum = 0); // Sunday -> Monday
 	}
@@ -164,12 +177,12 @@ function setMateriaInfo(horarios) {
 	});
 
 	materias.forEach((n) => {
-		const span = document.createElement('span'); // Creates an span for the name and sets the color in --square-color
+		const li = document.createElement('li'); // Creates an li for the name and sets the color in --square-color
 
-		span.classList.add('materia__info--item');
-		span.textContent = n.name;
-		span.style.setProperty('--square-color', `#${n.color}`);
-		materiasInfo.append(span);
+		li.classList.add('materia__info--item');
+		li.textContent = n.name;
+		li.style.setProperty('--square-color', `#${n.color}`);
+		materiasInfo.append(li);
 	});
 }
 
@@ -183,18 +196,18 @@ function createDiv(className, html = '') {
 export function verifyMonth() {
 	// Disable the buttons when required
 	if (month == currentMonth) {
-		previousButton.classList += ' disabled';
+		previousButton.classList.add('disabled');
 		previousButton.disabled = true;
 	} else if (month == 11) {
-		nextButton.classList += ' disabled';
+		nextButton.classList.add('disabled');
 		nextButton.disabled = true;
 	}
 	if (month < 11) {
-		nextButton.classList -= ' disabled';
+		nextButton.classList.remove('disabled');
 		nextButton.disabled = false;
 	}
 	if (month > currentMonth) {
-		previousButton.classList -= ' disabled';
+		previousButton.classList.remove('disabled');
 		previousButton.disabled = false;
 	}
 }
@@ -248,3 +261,25 @@ previousButton.addEventListener('click', () => {
 	setCalendar(fetchData, month == currentMonth);
 	verifyMonth();
 });
+
+const mq = window.matchMedia('(max-width: 1280px)');
+const main = document.querySelector('main');
+
+const lists = [...document.querySelectorAll('.list-details--ul')].map((el) => ({
+	el,
+	parent: el.parentNode,
+	next: el.nextSibling,
+}));
+
+function move(e) {
+	if (e.matches) {
+		lists.forEach(({ el }) => main.appendChild(el));
+	} else {
+		lists.forEach(({ el, parent, next }) => {
+			parent.insertBefore(el, next);
+		});
+	}
+}
+
+mq.addEventListener('change', move);
+move(mq);

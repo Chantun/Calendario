@@ -1,9 +1,9 @@
 @font-face {
 	font-family: 'UnIcons';
 	src:
-		url('../fonts/UnIcons.woff2') format('woff2'),
-		url('../fonts/UnIcons.ttf') format('truetype'),
-		url('../fonts/UnIcons.woff') format('woff');
+		url('../fonts/UnIcons/UnIcons.woff2') format('woff2'),
+		url('../fonts/UnIcons/UnIcons.ttf') format('truetype'),
+		url('../fonts/UnIcons/UnIcons.woff') format('woff');
 	font-weight: normal;
 	font-style: normal;
 	font-display: block;
@@ -11,10 +11,13 @@
 
 .icon__container {
 	position: absolute;
-	left: 2%;
-	bottom: -2px;
+	bottom: 0;
+	width: 100%;
+	min-height: 10px;
 	font-size: 1.2rem;
 	user-select: none;
+	overflow-x: auto;
+	margin-left: 6px;
 }
 
 .icon_before::before {
@@ -29,70 +32,64 @@
 	-moz-osx-font-smoothing: grayscale;
 }
 .icon_before--big::before {
-	font-size: 1.4rem;
+	font-size: 20px !important;
 	padding-right: 4px;
 }
 
 .icon_holiday::before {
-	content: '';
-	color: #1b6ef3;
+	content: '';
+	color: #5fa777;
 }
 .icon_paro::before {
-	content: '';
-	color: #d7263d;
+	content: '';
+	color: #c65a5a;
 }
 .icon_expo::before {
-	content: '';
-	color: #7a3ff2;
+	content: '';
+	color: #5b8def;
 }
 .icon_mesa::before {
-	content: '';
-	color: #c2185b;
+	content: '';
+	color: #8a6ccf;
 }
 .icon_exam::before {
-	content: '';
-	color: #008b8b;
+	content: '';
+	color: #e58a4e;
 }
 .icon_recu::before {
-	content: '';
-	color: #0fa958;
+	content: '';
+	color: #c9a227;
 }
 .icon_vacation::before {
-	content: '';
-	color: #f08a00;
+	content: '';
+	color: #4cbfa6;
 }
 .icon_homework::before {
-	content: '';
-	color: #1f7a8c;
+	content: '';
+	color: #3a6ea5;
 }
 .icon_others::before {
-	content: '';
-	color: #c2410c;
+	content: '';
+	color: #8a8a8a;
 }
-
-.icons__info {
-	margin: auto;
-	margin-top: 12px;
-	max-width: 950px;
-	display: grid;
-	grid-template-columns: repeat(3, 1fr);
-	gap: 4px;
+.icon_banana::before {
+	content: '';
+	color: #eee125;
 }
 
 @media (max-width: 740px) {
-	.icon__container {
-		left: 1px;
-		bottom: -4px;
-	}
-
 	.icon_before::before {
-		font-size: 12px;
-	}
-	.icon_before--big::before {
 		font-size: 16px;
 	}
 
 	.icons__info {
+		display: grid;
 		grid-template-columns: repeat(2, 1fr);
+	}
+}
+
+@media (max-width: 740px) {
+	.icon_before::before {
+		font-size: 12px;
 	}
 }
