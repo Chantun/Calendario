@@ -43,11 +43,13 @@ export function addHorario(user, materias) {
 	start.type = 'time';
 	const finish = document.createElement('input');
 	finish.type = 'time';
+	const virtual = document.createElement('input');
+	virtual.type = 'checkbox';
 
 	const rowContainer = document.createElement('div');
 	rowContainer.classList.add('flex-row');
 
-	rowContainer.append(selectDay, selectMateria, start, finish);
+	rowContainer.append(selectDay, selectMateria, start, finish, virtual);
 
 	const submit = document.createElement('button');
 	submit.textContent = 'Enviar';
@@ -57,6 +59,7 @@ export function addHorario(user, materias) {
 			day: selectDay.value,
 			start: start.value,
 			finish: finish.value,
+			virtual: virtual.checked
 		});
 	});
 
@@ -77,10 +80,12 @@ export function addEvent(user, materias, types) {
 	const date = document.createElement('input');
 	date.type = 'date';
 
+	const details = document.createElement('input');
+
 	const rowContainer = document.createElement('div');
 	rowContainer.classList.add('flex-row');
 
-	rowContainer.append(selectMateria, selectType, date);
+	rowContainer.append(selectMateria, selectType, date, details);
 
 	const submit = document.createElement('button');
 	submit.textContent = 'Enviar';
@@ -89,6 +94,7 @@ export function addEvent(user, materias, types) {
 			materia: selectMateria.value,
 			type: selectType.value,
 			date: date.value,
+			details: details.value
 		});
 	});
 

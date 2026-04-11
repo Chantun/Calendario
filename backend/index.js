@@ -196,7 +196,8 @@ app.post('/addHorario', basicAuth, async (req, res) => {
 		body.day == null ||
 			body.start == null ||
 			body.finish == null ||
-			body.materia == null,
+			body.materia == null ||
+			body.virtual == null,
 		db.addHorario,
 		body,
 	);
@@ -220,7 +221,7 @@ app.post('/addPeriod', basicAuth, async (req, res) => {
 app.post('/addEvent', basicAuth, async (req, res) => {
 	const body = req.body;
 	const result = await adder(
-		body.materia == null || body.type == null || body.date == null,
+		body.materia == null || body.type == null || body.date == null || body.details == null,
 		db.addEvent,
 		body,
 	);
@@ -253,7 +254,8 @@ app.post('/setHorario', basicAuth, async (req, res) => {
 		body.materia == null ||
 			body.day == null ||
 			body.start == null ||
-			body.finish == null,
+			body.finish == null ||
+			body.virtual == null,
 		db.setHorario,
 		body,
 	);
@@ -263,7 +265,7 @@ app.post('/setHorario', basicAuth, async (req, res) => {
 app.post('/setEvent', basicAuth, async (req, res) => {
 	const body = req.body;
 	const result = await setter(
-		body.materia == null || body.type == null || body.date == null,
+		body.materia == null || body.type == null || body.date == null || body.details == null,
 		db.setEvent,
 		body,
 	);

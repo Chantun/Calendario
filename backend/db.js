@@ -41,7 +41,7 @@ async function getHorarios() {
 }
 
 async function getHorariosPure() {
-	return await getter(`SELECT H.id, H.day, H.materia_id, M.name AS materia, H.start, H.finish, H.active FROM horarios H
+	return await getter(`SELECT H.id, H.day, H.materia_id, M.name AS materia, H.start, H.finish, H.is_virtual, H.active FROM horarios H
 		JOIN materias M ON M.id = H.materia_id`);
 }
 
@@ -60,7 +60,7 @@ async function getEvents() {
 }
 
 async function getEventsPure() {
-	return await getter(`SELECT E.id, E.materia_id, M.name AS materia_name, E.type, T.name AS type_name, E.date, E.active FROM events E
+	return await getter(`SELECT E.id, E.materia_id, M.name AS materia_name, E.type, T.name AS type_name, E.date, E.details, E.active FROM events E
 		JOIN materias M ON M.id = E.materia_id
 		JOIN events_types T ON T.id = E.type`);
 }
@@ -88,10 +88,10 @@ async function addPeriod(data) {
 async function addEvent(data) {
 	return await execQuery(
 		`INSERT INTO events
-			(materia_id, type, date, active)
+			(materia_id, type, date, details, active)
 			VALUES
-			(?, ?, ?, TRUE)`,
-		[data.materia, data.type, data.date],
+			(?, ?, ?, ?, TRUE)`,
+		[data.materia, data.type, data.date, data.details],
 	);
 }
 
@@ -118,10 +118,10 @@ async function addMateria(data) {
 async function addHorario(data) {
 	return await execQuery(
 		`INSERT INTO horarios
-			(day, start, finish, materia_id, active)
+			(day, start, finish, materia_id, is_virtual, active)
 			VALUES
-			(?, ?, ?, ?, TRUE)`,
-		[data.day, data.start, data.finish, data.materia],
+			(?, ?, ?, ?, ?, TRUE)`,
+		[data.day, data.start, data.finish, data.materia, data.virtual],
 	);
 }
 
@@ -137,18 +137,18 @@ async function setMateria(data) {
 async function setHorario(data) {
 	return await execQuery(
 		`UPDATE horarios
-			SET materia_id = ?, day = ?, start = ?, finish = ?
+			SET materia_id = ?, day = ?, start = ?, finish = ?, is_virtual = ?
 			WHERE id = ?`,
-		[data.materia, data.day, data.start, data.finish, data.id],
+		[data.materia, data.day, data.start, data.finish, data.virtual, data.id],
 	);
 }
 
 async function setEvent(data) {
 	return await execQuery(
 		`UPDATE events
-			SET materia_id = ?, type = ?, date = ?
+			SET materia_id = ?, type = ?, date = ?, details = ?
 			WHERE id = ?`,
-		[data.materia, data.type, data.date, data.id],
+		[data.materia, data.type, data.date, data.details, data.id],
 	);
 }
 
