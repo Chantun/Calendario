@@ -21,17 +21,13 @@ export default async function mainPage(user) {
 		} else if (e.target.value == 'horario') {
 			addSection.addHorario(user, materias);
 		} else if (e.target.value == 'event') {
-			const response = addSection.addEvent(user, materias, types);
-			addContent.append(response[0], response[1]);
+			addSection.addEvent(user, materias, types);
 		} else if (e.target.value == 'period') {
-			const response = addSection.addPeriod(user, types);
-			addContent.append(response[0], response[1]);
+			addSection.addPeriod(user, types);
 		} else if (e.target.value == 'holiday') {
-			const response = addSection.addHoliday(user, types);
-			addContent.append(response[0], response[1]);
+			addSection.addHoliday(user);
 		} else if (e.target.value == 'backup') {
-			const response = addSection.addBackup(user, types);
-			addContent.append(response[0], response[1]);
+			addSection.addBackup(user);
 		}
 	});
 

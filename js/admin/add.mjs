@@ -2,174 +2,206 @@ import { simplePost } from '../fetch.mjs';
 const modal = document.getElementById('inputModal');
 const container = document.getElementById('inputModal--content');
 const submit = document.getElementById('addSubmit');
+const errorText = modal.querySelector('.error');
+
+let submitHandler = null;
+
+function clearModal() {
+	container.innerHTML = '';
+	errorText.textContent = '';
+}
+
+function openModal() {
+	modal.style.display = 'block';
+}
+
+function closeModal() {
+	modal.style.display = 'none';
+	clearModal();
+	if (submitHandler) {
+		submit.removeEventListener('click', submitHandler);
+		submitHandler = null;
+	}
+}
+
+function setSubmitHandler(handler) {
+	if (submitHandler) {
+		submit.removeEventListener('click', submitHandler);
+	}
+
+	submitHandler = async (event) => {
+		event.preventDefault();
+		await handler();
+	};
+
+	submit.addEventListener('click', submitHandler);
+}
+
+function createLabel(text, element) {
+	const label = document.createElement('label');
+	label.classList.add('input-modal__label');
+	label.textContent = text;
+	label.append(element);
+	return label;
+}
+
+function createTextInput(placeholder = '') {
+	const input = document.createElement('input');
+	input.type = 'text';
+	input.classList.add('input-modal', 'input-modal--text');
+	if (placeholder) input.placeholder = placeholder;
+	return input;
+}
+
+function createInput(type, placeholder = '') {
+	const input = document.createElement('input');
+	input.type = type;
+	input.classList.add('input-modal');
+	if (type === 'text' || type === 'date' || type === 'time') {
+		input.classList.add('input-modal--text');
+	}
+	if (placeholder) input.placeholder = placeholder;
+	return input;
+}
+
+function createSelect(options) {
+	const select = document.createElement('select');
+	options.forEach(({ value, label }) => {
+		const option = document.createElement('option');
+		option.value = value;
+		option.textContent = label;
+		select.append(option);
+	});
+	return select;
+}
+
+function createOptionsFromList(list) {
+	return list.map((item) => ({ value: item.id, label: item.name }));
+}
 
 export function addMateria(user) {
-	const nameInput = document.createElement('input');
-	nameInput.classList.add('input-modal', 'input-modal--text');
-	nameInput.placeholder = 'Matematicas';
-	const colorInput = document.createElement('input');
-	colorInput.classList.add('input-modal', 'input-modal--color');
-	colorInput.type = 'color';
+	const nameInput = createTextInput('Matematicas');
+	const colorInput = createInput('color');
+	colorInput.classList.add('input-modal--color');
 
-	const nameLabel = document.createElement('label');
-	nameLabel.classList.add('input-modal__label');
-	nameLabel.textContent = 'Nombre:';
-	nameLabel.append(nameInput);
-	const colorLabel = document.createElement('label');
-	colorLabel.classList.add('input-modal__label');
-	colorLabel.textContent = 'Color:';
-	colorLabel.append(colorInput);
+	container.append(
+		createLabel('Nombre:', nameInput),
+		createLabel('Color:', colorInput),
+	);
+	openModal();
 
-	container.append(nameLabel, colorLabel);
-	modal.style.display = 'block';
-
-	submit.onclick = async () => {
-		if (nameInput.value && colorInput.value) {
-			await simplePost('http://localhost:3000/addMateria', user, {
-				name: nameInput.value,
-				color: colorInput.value.slice(1).toUpperCase(),
-			});
-			modal.style.display = 'none';
-		} else {
-			modal.querySelector('.error').textContent =
-				'Se deben ingresar todos los datos solicitados';
+	setSubmitHandler(async () => {
+		if (!nameInput.value || !colorInput.value) {
+			errorText.textContent = 'Se deben ingresar todos los datos solicitados';
+			return;
 		}
-	};
+
+		await simplePost('http://localhost:3000/addMateria', user, {
+			name: nameInput.value,
+			color: colorInput.value.slice(1).toUpperCase(),
+		});
+		closeModal();
+	});
 }
 
 export function addHorario(user, materias) {
-	const selectDay = document.createElement('select');
-	selectDay.innerHTML = `<option value="0">Domingo</option>
-	<option value="1">Lunes</option>
-	<option value="2">Martes</option>
-	<option value="3">Miercoles</option>
-	<option value="4">Jueves</option>
-	<option value="5">Viernes</option>
-	<option value="6">Sabado</option>`;
-
-	const selectMateria = document.createElement('select');
-	materias.forEach((m) => {
-		selectMateria.innerHTML += `<option value="${m.id}">${m.name}</option>`;
-	});
-
-	const start = document.createElement('input');
-	start.type = 'time';
-	const finish = document.createElement('input');
-	finish.type = 'time';
-	const virtual = document.createElement('input');
-	virtual.type = 'checkbox';
-
-	const dayLabel = document.createElement('label');
-	dayLabel.classList.add('input-modal__label');
-	dayLabel.textContent = 'Dia:';
-	dayLabel.append(selectDay);
-	const materiaLabel = document.createElement('label');
-	materiaLabel.classList.add('input-modal__label');
-	materiaLabel.textContent = 'materia:';
-	materiaLabel.append(selectMateria);
-	const startLabel = document.createElement('label');
-	startLabel.classList.add('input-modal__label');
-	startLabel.textContent = 'Inicio:';
-	startLabel.append(start);
-	const finishLabel = document.createElement('label');
-	finishLabel.classList.add('input-modal__label');
-	finishLabel.textContent = 'Final:';
-	finishLabel.append(finish);
-	const virtualLabel = document.createElement('label');
-	virtualLabel.classList.add('input-modal__label');
-	virtualLabel.textContent = 'Virtual:';
-	virtualLabel.append(virtual);
+	const selectDay = createSelect([
+		{ value: '0', label: 'Domingo' },
+		{ value: '1', label: 'Lunes' },
+		{ value: '2', label: 'Martes' },
+		{ value: '3', label: 'Miercoles' },
+		{ value: '4', label: 'Jueves' },
+		{ value: '5', label: 'Viernes' },
+		{ value: '6', label: 'Sabado' },
+	]);
+	const selectMateria = createSelect(createOptionsFromList(materias));
+	const start = createInput('time');
+	const finish = createInput('time');
+	const virtual = createInput('checkbox');
 
 	container.append(
-		dayLabel,
-		materiaLabel,
-		startLabel,
-		finishLabel,
-		virtualLabel,
+		createLabel('Dia:', selectDay),
+		createLabel('Materia:', selectMateria),
+		createLabel('Inicio:', start),
+		createLabel('Final:', finish),
+		createLabel('Virtual:', virtual),
 	);
-	modal.style.display = 'block';
+	openModal();
 
-	submit.onclick = async () => {
+	setSubmitHandler(async () => {
 		if (
-			selectMateria.value &&
-			selectDay.value &&
-			start.value &&
-			finish.value &&
-			virtual.checked != null
+			!selectMateria.value ||
+			!selectDay.value ||
+			!start.value ||
+			!finish.value
 		) {
-			await simplePost('http://localhost:3000/addHorario', user, {
-				materia: selectMateria.value,
-				day: selectDay.value,
-				start: start.value,
-				finish: finish.value,
-				virtual: virtual.checked,
-			});
-			modal.style.display = 'none';
-		} else {
-			modal.querySelector('.error').textContent =
-				'Se deben ingresar todos los datos solicitados';
+			errorText.textContent = 'Se deben ingresar todos los datos solicitados';
+			return;
 		}
-	};
+
+		await simplePost('http://localhost:3000/addHorario', user, {
+			materia: selectMateria.value,
+			day: selectDay.value,
+			start: start.value,
+			finish: finish.value,
+			virtual: virtual.checked,
+		});
+		closeModal();
+	});
 }
 
 export function addEvent(user, materias, types) {
-	const selectMateria = document.createElement('select');
-	materias.forEach((m) => {
-		selectMateria.innerHTML += `<option value="${m.id}">${m.name}</option>`;
-	});
+	const selectMateria = createSelect(createOptionsFromList(materias));
+	const selectType = createSelect(createOptionsFromList(types));
+	const date = createInput('date');
+	const details = createTextInput('Detalles');
 
-	const selectType = document.createElement('select');
-	types.forEach((t) => {
-		selectType.innerHTML += `<option value="${t.id}">${t.name}</option>`;
-	});
+	container.append(
+		createLabel('Materia:', selectMateria),
+		createLabel('Tipo:', selectType),
+		createLabel('Fecha:', date),
+		createLabel('Detalles:', details),
+	);
+	openModal();
 
-	const date = document.createElement('input');
-	date.type = 'date';
+	setSubmitHandler(async () => {
+		if (!selectMateria.value || !selectType.value || !date.value) {
+			errorText.textContent = 'Se deben ingresar todos los datos solicitados';
+			return;
+		}
 
-	const details = document.createElement('input');
-
-	const rowContainer = document.createElement('div');
-	rowContainer.classList.add('flex-row');
-
-	rowContainer.append(selectMateria, selectType, date, details);
-
-	submit.removeEventListener();
-	submit.addEventListener('click', async () => {
 		await simplePost('http://localhost:3000/addEvent', user, {
 			materia: selectMateria.value,
 			type: selectType.value,
 			date: date.value,
 			details: details.value,
 		});
+		closeModal();
 	});
-
-	return [rowContainer, submit];
 }
 
 export function addPeriod(user, types) {
-	const selectType = document.createElement('select');
-	types.forEach((t) => {
-		selectType.innerHTML += `<option value="${t.id}">${t.name}</option>`;
-	});
+	const selectType = createSelect(createOptionsFromList(types));
+	const start = createInput('date');
+	const end = createInput('date');
+	const details = createTextInput('Detalles');
+	const suspension = createInput('checkbox');
 
-	const start = document.createElement('input');
-	start.type = 'date';
-	const end = document.createElement('input');
-	end.type = 'date';
+	container.append(
+		createLabel('Tipo:', selectType),
+		createLabel('Inicio:', start),
+		createLabel('Fin:', end),
+		createLabel('Detalles:', details),
+		createLabel('Suspension:', suspension),
+	);
+	openModal();
 
-	const details = document.createElement('input');
-	details.type = 'text';
+	setSubmitHandler(async () => {
+		if (!selectType.value || !start.value || !end.value) {
+			errorText.textContent = 'Se deben ingresar todos los datos solicitados';
+			return;
+		}
 
-	const suspension = document.createElement('input');
-	suspension.type = 'checkbox';
-
-	const rowContainer = document.createElement('div');
-	rowContainer.classList.add('flex-row');
-
-	rowContainer.append(selectType, start, end, details, suspension);
-
-	submit.removeEventListener();
-	submit.addEventListener('click', async () => {
 		await simplePost('http://localhost:3000/addPeriod', user, {
 			type: selectType.value,
 			start: start.value,
@@ -177,50 +209,52 @@ export function addPeriod(user, types) {
 			details: details.value,
 			suspension: suspension.checked,
 		});
+		closeModal();
 	});
-
-	return [rowContainer, submit];
 }
 
 export function addHoliday(user) {
-	const date = document.createElement('input');
-	date.type = 'date';
+	const date = createInput('date');
+	const type = createTextInput('Tipo');
+	const details = createTextInput('Detalles');
 
-	const type = document.createElement('input');
-	type.type = 'text';
-	type.placeholder = 'type';
+	container.append(
+		createLabel('Fecha:', date),
+		createLabel('Tipo:', type),
+		createLabel('Detalles:', details),
+	);
+	openModal();
 
-	const details = document.createElement('input');
-	details.type = 'text';
-	details.placeholder = 'details';
+	setSubmitHandler(async () => {
+		if (!type.value || !date.value) {
+			errorText.textContent = 'Se deben ingresar todos los datos solicitados';
+			return;
+		}
 
-	const rowContainer = document.createElement('div');
-	rowContainer.classList.add('flex-row');
-
-	rowContainer.append(date, type, details);
-
-	submit.removeEventListener();
-	submit.addEventListener('click', async () => {
 		await simplePost('http://localhost:3000/addHoliday', user, {
 			type: type.value,
 			date: date.value,
 			details: details.value,
 		});
+		closeModal();
 	});
-
-	return [rowContainer, submit];
 }
 
 export function addBackup(user) {
-	const name = document.createElement('input');
-	name.placeholder = 'name';
+	const name = createTextInput('Nombre');
 
-	submit.removeEventListener();
-	submit.addEventListener('click', async () => {
+	container.append(createLabel('Nombre:', name));
+	openModal();
+
+	setSubmitHandler(async () => {
+		if (!name.value) {
+			errorText.textContent = 'Se deben ingresar todos los datos solicitados';
+			return;
+		}
+
 		await simplePost('http://localhost:3000/createBackup', user, {
 			name: name.value,
 		});
+		closeModal();
 	});
-
-	return [name, submit];
 }
