@@ -39,6 +39,7 @@ body {
 
 main {
 	box-sizing: border-box;
+	height: 100dvh;
 	max-width: 1230px;
 	max-height: 100%;
 	border: solid 1px var(--calendar-border);
@@ -55,6 +56,9 @@ main {
 
 .title {
 	font-family: 'Montserrat';
+}
+.title--dark {
+	color: var(--font-title);
 }
 
 .list-details {

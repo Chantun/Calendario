@@ -17,11 +17,9 @@ export default async function mainPage(user) {
 	addOption.addEventListener('change', (e) => {
 		addContent.innerHTML = '';
 		if (e.target.value == 'materia') {
-			const response = addSection.addMateria(user);
-			addContent.append(response[0], response[1]);
+			addSection.addMateria(user);
 		} else if (e.target.value == 'horario') {
-			const response = addSection.addHorario(user, materias);
-			addContent.append(response[0], response[1]);
+			addSection.addHorario(user, materias);
 		} else if (e.target.value == 'event') {
 			const response = addSection.addEvent(user, materias, types);
 			addContent.append(response[0], response[1]);

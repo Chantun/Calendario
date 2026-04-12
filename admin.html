@@ -27,8 +27,15 @@
 		</div>
 		<div id="error_section"></div>
 		<main id="main" style="display: none">
+			<div id="inputModal">
+				<div id="input-div" class="inputModal--div">
+					<div id="inputModal--content"></div>
+					<button id="addSubmit" class="submit-button">Añadir</button>
+					<p class="error"></p>
+				</div>
+			</div>
 			<section id="add-section">
-				<h2 class="title">Add</h2>
+				<h2 class="title title--dark">Add</h2>
 				<select name="options" id="add-options" autocomplete="off">
 					<option value="" disabled selected hidden>N/A</option>
 					<option value="materia">Materia</option>
@@ -38,10 +45,18 @@
 					<option value="holiday">Feriado</option>
 					<option value="backup">Backup</option>
 				</select>
+				<!-- <ul class="int-list">
+					<li class="int-list--item">Materia</li>
+					<li class="int-list--item">Horario</li>
+					<li class="int-list--item">Evento</li>
+					<li class="int-list--item">Periodo</li>
+					<li class="int-list--item">Feriado</li>
+					<li class="int-list--item">Backup</li>
+				</ul> -->
 				<div id="add-content" class="content"></div>
 			</section>
 			<section id="modify-section">
-				<h2 class="title">Modify</h2>
+				<h2 class="title title--dark">Modify</h2>
 				<select name="options" id="modify-options" autocomplete="off">
 					<option value="" disabled selected hidden>N/A</option>
 					<option value="materia">Materia</option>
@@ -56,13 +71,13 @@
 				</div>
 			</section>
 			<section class="admin-section">
-				<h2 class="title">Admins</h2>
+				<h2 class="title title--dark">Admins</h2>
 				<div id="admin-content" class="content--tiny content--flex">
 					<table id="admin-table" class="table"></table>
 				</div>
 			</section>
 			<section class="backup-section">
-				<h2 class="title">Backups</h2>
+				<h2 class="title title--dark">Backups</h2>
 				<div id="backup-content" class="content--tiny content--flex">
 					<table id="backup-table" class="table"></table>
 					<div id="use-backup"></div>
