@@ -29,6 +29,7 @@ export default async function mainPage(user) {
 		} else if (e.target.value == 'backup') {
 			addSection.addBackup(user);
 		}
+		addOption.value = '';
 	});
 
 	const modifyOption = document.getElementById('modify-options');

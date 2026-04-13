@@ -134,6 +134,12 @@
 	border: solid 1px var(--calendar-border);
 }
 
+.input-modal--checkbox {
+}
+
+.input-modal--select {
+}
+
 .input-modal__label {
 	display: flex;
 	flex-direction: column;

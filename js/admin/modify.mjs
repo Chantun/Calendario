@@ -1,5 +1,14 @@
 import { simpleFetch, simplePost } from '../fetch.mjs';
 
+const modal = document.getElementById('inputModal');
+const container = document.getElementById('inputModal--content');
+const submit = document.getElementById('addSubmit');
+const cancel = document.getElementById('cancelModal');
+const errorText = modal.querySelector('.error');
+
+let submitHandler = null;
+cancel.addEventListener('click', () => closeModal());
+
 const API_BASE = 'http://localhost:3000';
 
 function convertTo12Hour(time24) {
@@ -35,11 +44,35 @@ function numberToDay(num) {
 	return days[num];
 }
 
+function clearModal() {
+	container.innerHTML = '';
+	errorText.textContent = '';
+}
+
+function openModal() {
+	modal.style.display = 'block';
+}
+
+function closeModal() {
+	modal.style.display = 'none';
+	clearModal();
+	if (submitHandler) {
+		submit.removeEventListener('click', submitHandler);
+		submitHandler = null;
+	}
+}
+
+function createLabel(text, element) {
+	const label = document.createElement('label');
+	label.classList.add('input-modal__label');
+	label.textContent = text;
+	label.append(element);
+	return label;
+}
+
 function clearTables() {
 	const modifyTable = document.getElementById('modify-table');
-	const editTable = document.getElementById('edit-table');
 	if (modifyTable) modifyTable.innerHTML = '';
-	if (editTable) editTable.innerHTML = '';
 }
 
 function createInput({
@@ -52,6 +85,13 @@ function createInput({
 	step,
 }) {
 	const input = document.createElement('input');
+	input.classList.add('input-modal');
+
+	if (type === 'text' || type === 'date' || type === 'time')
+		input.classList.add('input-modal--text');
+	else if (type === 'color') input.classList.add('input-modal--color');
+	else if (type === 'checkbox') input.classList.add('input-modal--checkbox');
+
 	if (type === 'time') {
 		input.type = 'text';
 		input.placeholder = 'HH:MM AM/PM';
@@ -72,6 +112,7 @@ function createInput({
 
 function createSelect(options, selected = 0) {
 	const select = document.createElement('select');
+	select.classList.add('input-modal', 'input-modal--select');
 	options.forEach((n) => {
 		const option = document.createElement('option');
 		option.value = n.id;
@@ -94,17 +135,15 @@ async function updateActiveState(
 }
 
 async function renderEditForm(user, fields, onSubmit) {
-	const container = document.getElementById('edit-table');
-	if (!container) return;
 	container.innerHTML = '';
 
-	const submit = document.createElement('button');
-	submit.type = 'button';
-	submit.textContent = 'Enviar';
-	submit.addEventListener('click', async () => await onSubmit());
+	submit.onclick = async () => {
+		await onSubmit();
+		closeModal();
+	};
 
 	fields.forEach((field) => container.append(field));
-	container.append(submit);
+	openModal();
 }
 
 function createRow(cells, onClick) {
@@ -133,22 +172,30 @@ async function editMateria(user, materia) {
 	const color = createInput({ type: 'color', value: `#${materia.color}` });
 	const active = createInput({ type: 'checkbox', checked: materia.active });
 
-	await renderEditForm(user, [name, color, active], async () => {
-		await simplePost(`${API_BASE}/setMateria`, user, {
-			id: materia.id,
-			name: name.value,
-			color: color.value.slice(1).toUpperCase(),
-		});
-		await updateActiveState(
-			user,
-			materia.active,
-			active.checked,
-			materia.id,
-			'materias',
-		);
-		const updatedMaterias = await simpleFetch(`${API_BASE}/getMaterias`);
-		modifyMateria(user, updatedMaterias);
-	});
+	await renderEditForm(
+		user,
+		[
+			createLabel('Nombre:', name),
+			createLabel('Color:', color),
+			createLabel('Activo:', active),
+		],
+		async () => {
+			await simplePost(`${API_BASE}/setMateria`, user, {
+				id: materia.id,
+				name: name.value,
+				color: color.value.slice(1).toUpperCase(),
+			});
+			await updateActiveState(
+				user,
+				materia.active,
+				active.checked,
+				materia.id,
+				'materias',
+			);
+			const updatedMaterias = await simpleFetch(`${API_BASE}/getMaterias`);
+			modifyMateria(user, updatedMaterias);
+		},
+	);
 }
 
 async function editHorario(user, horario, materias) {
@@ -172,12 +219,22 @@ async function editHorario(user, horario, materias) {
 	);
 	const start = createInput({ type: 'time', value: horario.start });
 	const finish = createInput({ type: 'time', value: horario.finish });
-	const virtual = createInput({ type: 'checkbox', checked: horario.is_virtual});
+	const virtual = createInput({
+		type: 'checkbox',
+		checked: horario.is_virtual,
+	});
 	const active = createInput({ type: 'checkbox', checked: horario.active });
 
 	await renderEditForm(
 		user,
-		[day, materia, start, finish, virtual, active],
+		[
+			createLabel('Dia:', day),
+			createLabel('Materia:', materia),
+			createLabel('Entrada:', start),
+			createLabel('Salida:', finish),
+			createLabel('Virtual:', virtual),
+			createLabel('Activo:', active),
+		],
 		async () => {
 			await simplePost(`${API_BASE}/setHorario`, user, {
 				id: horario.id,
@@ -185,7 +242,7 @@ async function editHorario(user, horario, materias) {
 				day: day.value,
 				start: convertTo24Hour(start.value),
 				finish: convertTo24Hour(finish.value),
-				virtual: virtual.checked
+				virtual: virtual.checked,
 			});
 			await updateActiveState(
 				user,
@@ -216,23 +273,33 @@ async function editEvent(user, event, materias, types) {
 	const details = createInput({ type: 'text', value: event.details });
 	const active = createInput({ type: 'checkbox', checked: event.active });
 
-	await renderEditForm(user, [materia, type, date, details, active], async () => {
-		await simplePost(`${API_BASE}/setEvent`, user, {
-			id: event.id,
-			materia: materia.value,
-			type: type.value,
-			date: date.value,
-			details: details.value
-		});
-		await updateActiveState(
-			user,
-			event.active,
-			active.checked,
-			event.id,
-			'events',
-		);
-		await modifyEvent(user, materias, types);
-	});
+	await renderEditForm(
+		user,
+		[
+			createLabel('Materia:', materia),
+			createLabel('Tipo:', type),
+			createLabel('Fecha:', date),
+			createLabel('Detalles:', details),
+			createLabel('Activo:', active),
+		],
+		async () => {
+			await simplePost(`${API_BASE}/setEvent`, user, {
+				id: event.id,
+				materia: materia.value,
+				type: type.value,
+				date: date.value,
+				details: details.value,
+			});
+			await updateActiveState(
+				user,
+				event.active,
+				active.checked,
+				event.id,
+				'events',
+			);
+			await modifyEvent(user, materias, types);
+		},
+	);
 }
 
 async function editHoliday(user, holiday) {
@@ -241,22 +308,31 @@ async function editHoliday(user, holiday) {
 	const details = createInput({ type: 'text', value: holiday.details });
 	const active = createInput({ type: 'checkbox', checked: holiday.active });
 
-	await renderEditForm(user, [date, type, details, active], async () => {
-		await simplePost(`${API_BASE}/setHoliday`, user, {
-			id: holiday.id,
-			date: date.value,
-			type: type.value,
-			details: details.value,
-		});
-		await updateActiveState(
-			user,
-			holiday.active,
-			active.checked,
-			holiday.id,
-			'feriados',
-		);
-		await modifyHoliday(user);
-	});
+	await renderEditForm(
+		user,
+		[
+			createLabel('Fecha:', date),
+			createLabel('Tipo:', type),
+			createLabel('Detalles:', details),
+			createLabel('Activo:', active),
+		],
+		async () => {
+			await simplePost(`${API_BASE}/setHoliday`, user, {
+				id: holiday.id,
+				date: date.value,
+				type: type.value,
+				details: details.value,
+			});
+			await updateActiveState(
+				user,
+				holiday.active,
+				active.checked,
+				holiday.id,
+				'feriados',
+			);
+			await modifyHoliday(user);
+		},
+	);
 }
 
 async function editPeriod(user, period, types) {
@@ -278,7 +354,14 @@ async function editPeriod(user, period, types) {
 
 	await renderEditForm(
 		user,
-		[type, start, end, details, suspension, active],
+		[
+			createLabel('Tipo:', type),
+			createLabel('Principio:', start),
+			createLabel('Final:', end),
+			createLabel('Detalles:', details),
+			createLabel('Suspension de clases:', suspension),
+			createLabel('Activo:', active),
+		],
 		async () => {
 			await simplePost(`${API_BASE}/setPeriod`, user, {
 				id: period.id,
@@ -336,7 +419,15 @@ export async function modifyHorario(user, materias) {
 	]);
 	const rows = horarios.map((h) =>
 		createRow(
-			[h.id, numberToDay(h.day), h.materia, h.start, h.finish, h.is_virtual, h.active],
+			[
+				h.id,
+				numberToDay(h.day),
+				h.materia,
+				h.start,
+				h.finish,
+				h.is_virtual,
+				h.active,
+			],
 			() => editHorario(user, h, materias),
 		),
 	);
@@ -351,10 +442,24 @@ export async function modifyEvent(user, materias, types) {
 	const modifyTable = document.getElementById('modify-table');
 	if (!modifyTable) return;
 
-	const header = createHeader(['Id', 'Materia', 'Type', 'Date', 'Details', 'Active']);
+	const header = createHeader([
+		'Id',
+		'Materia',
+		'Type',
+		'Date',
+		'Details',
+		'Active',
+	]);
 	const rows = events.map((e) =>
 		createRow(
-			[e.id, e.materia_name, e.type_name, e.date.slice(0, 10), e.details, e.active],
+			[
+				e.id,
+				e.materia_name,
+				e.type_name,
+				e.date.slice(0, 10),
+				e.details,
+				e.active,
+			],
 			() => editEvent(user, e, materias, types),
 		),
 	);

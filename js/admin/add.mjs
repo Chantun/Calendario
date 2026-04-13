@@ -2,9 +2,11 @@ import { simplePost } from '../fetch.mjs';
 const modal = document.getElementById('inputModal');
 const container = document.getElementById('inputModal--content');
 const submit = document.getElementById('addSubmit');
+const cancel = document.getElementById('cancelModal');
 const errorText = modal.querySelector('.error');
 
 let submitHandler = null;
+cancel.addEventListener('click', () => closeModal());
 
 function clearModal() {
 	container.innerHTML = '';
