@@ -2,13 +2,41 @@ import { simplePost, simpleFetch } from '../fetch.mjs';
 
 const API_BASE = 'http://localhost:3000';
 
+const modal = document.getElementById('backupModal');
+const container = document.getElementById('backupModal--content');
+const table = document.getElementById('backup-table');
+const recovery = document.getElementById('useBackup');
+const deleteButton = document.getElementById('deleteBackup');
+const cancel = document.getElementById('cancel-backup');
+const errorText = modal.querySelector('.error');
+
+let submitHandler = null;
+cancel.addEventListener('click', () => closeModal());
+
+function clearModal() {
+	container.innerHTML = '';
+	errorText.textContent = '';
+}
+
+function openModal() {
+	modal.style.display = 'block';
+}
+
+function closeModal() {
+	modal.style.display = 'none';
+	clearModal();
+	if (submitHandler) {
+		submit.removeEventListener('click', submitHandler);
+		submitHandler = null;
+	}
+	deleteButton.style.display = 'none';
+}
+
 export async function backupTable(user) {
 	const backups = await simpleFetch(`${API_BASE}/getBackups`);
-	const table = document.getElementById('backup-table');
-	const useBackup = document.getElementById('use-backup');
 
 	table.innerHTML = '';
-	useBackup.innerHTML = '';
+	container.innerHTML = '';
 
 	const header = document.createElement('tr');
 	header.classList.add('row', 'row--header');
@@ -21,29 +49,29 @@ export async function backupTable(user) {
 		tr.innerHTML = `<td class="cell">${b.name}</td><td class="cell">${b.date}</td><td class="cell">${b.time}</td><td class="cell">${b.temporary}</td>`;
 
 		tr.addEventListener('click', () => {
-			useBackup.innerHTML = '';
+			container.innerHTML = '';
 			const title = document.createElement('h3');
 			title.textContent = b.name;
 
-			const recovery = document.createElement('button');
-			recovery.textContent = 'Cargar';
-			recovery.addEventListener('click', async () => {
+			recovery.onclick = async () => {
 				await simplePost(`${API_BASE}/recovery`, user, {
 					name: b.name.substring(0, b.name.length - 4),
 				});
 				backupTable(user);
-			});
+				closeModal();
+			};
 
-			useBackup.append(title, recovery);
+			container.append(title);
 			if (!b.temporary) {
-				const deleteButton = document.createElement('button');
-				deleteButton.textContent = 'Borrar';
-				deleteButton.addEventListener('click', async () => {
+				deleteButton.onclick = async () => {
 					await simplePost(`${API_BASE}/deleteBackup`, user, { name: b.name });
 					backupTable(user);
-				});
-				useBackup.append(deleteButton);
+					closeModal();
+				};
+				deleteButton.style.display = 'block';
 			}
+
+			openModal();
 		});
 		return tr;
 	});

@@ -35,10 +35,20 @@
 					<p class="error"></p>
 				</div>
 			</div>
+			<div id="backupModal">
+				<div id="backup-div" class="inputModal--div">
+					<div id="backupModal--content"></div>
+					<div class="buttons-container">
+						<button id="useBackup" class="submit-button">Cargar</button>
+						<button id="deleteBackup" class="submit-button">Borrar</button>
+					</div>
+					<button id="cancel-backup" class="submit-button">Cancelar</button>
+					<p class="error"></p>
+				</div>
+			</div>
 			<section id="add-section">
-				<h2 class="title title--dark">Add</h2>
+				<h2 class="title title--dark">Añadir</h2>
 				<select name="options" id="add-options" autocomplete="off">
-					<option value="" disabled selected hidden>N/A</option>
 					<option value="materia">Materia</option>
 					<option value="horario">Horario</option>
 					<option value="event">Evento</option>
@@ -57,7 +67,7 @@
 				<div id="add-content" class="content"></div>
 			</section>
 			<section id="modify-section">
-				<h2 class="title title--dark">Modify</h2>
+				<h2 class="title title--dark">Modificar</h2>
 				<select name="options" id="modify-options" autocomplete="off">
 					<option value="" disabled selected hidden>N/A</option>
 					<option value="materia">Materia</option>
@@ -80,7 +90,6 @@
 				<h2 class="title title--dark">Backups</h2>
 				<div id="backup-content" class="content--tiny content--flex">
 					<table id="backup-table" class="table"></table>
-					<div id="use-backup"></div>
 				</div>
 			</section>
 		</main>
