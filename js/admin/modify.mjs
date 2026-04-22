@@ -9,7 +9,7 @@ const errorText = modal.querySelector('.error');
 let submitHandler = null;
 cancel.addEventListener('click', () => closeModal());
 
-const API_BASE = 'http://localhost:3000';
+const API_BASE = '/api';
 
 function convertTo12Hour(time24) {
 	if (!time24) return '';

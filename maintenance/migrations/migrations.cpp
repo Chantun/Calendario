@@ -128,7 +128,7 @@ bool runMigration(Connection *con, const string &migration) {
 }
 
 int main() {
-  const string basePath = "/home/ubuntu/maintenance/migrations";
+  const string basePath = "/home/ubuntu/maintenance/migrations/";
   try {
     mysql::MySQL_Driver *driver;
 

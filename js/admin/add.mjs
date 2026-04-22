@@ -103,7 +103,7 @@ export function addMateria(user) {
 			return;
 		}
 
-		await simplePost('http://localhost:3000/addMateria', user, {
+		await simplePost('/api/addMateria', user, {
 			name: nameInput.value,
 			color: colorInput.value.slice(1).toUpperCase(),
 		});
@@ -146,7 +146,7 @@ export function addHorario(user, materias) {
 			return;
 		}
 
-		await simplePost('http://localhost:3000/addHorario', user, {
+		await simplePost('/api/addHorario', user, {
 			materia: selectMateria.value,
 			day: selectDay.value,
 			start: start.value,
@@ -177,7 +177,7 @@ export function addEvent(user, materias, types) {
 			return;
 		}
 
-		await simplePost('http://localhost:3000/addEvent', user, {
+		await simplePost('/api/addEvent', user, {
 			materia: selectMateria.value,
 			type: selectType.value,
 			date: date.value,
@@ -209,7 +209,7 @@ export function addPeriod(user, types) {
 			return;
 		}
 
-		await simplePost('http://localhost:3000/addPeriod', user, {
+		await simplePost('/api/addPeriod', user, {
 			type: selectType.value,
 			start: start.value,
 			end: end.value,
@@ -238,7 +238,7 @@ export function addHoliday(user) {
 			return;
 		}
 
-		await simplePost('http://localhost:3000/addHoliday', user, {
+		await simplePost('/api/addHoliday', user, {
 			type: type.value,
 			date: date.value,
 			details: details.value,
@@ -259,7 +259,7 @@ export function addBackup(user) {
 			return;
 		}
 
-		await simplePost('http://localhost:3000/createBackup', user, {
+		await simplePost('/api/createBackup', user, {
 			name: name.value,
 		});
 		closeModal();

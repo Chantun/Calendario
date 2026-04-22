@@ -5,8 +5,8 @@ import { adminTable } from './admins.mjs';
 import { backupTable } from './backup.mjs';
 
 export default async function mainPage(user) {
-	const materias = await simpleFetch('http://localhost:3000/getMaterias');
-	const types = await simpleFetch('http://localhost:3000/getTypes');
+	const materias = await simpleFetch('/api/getMaterias');
+	const types = await simpleFetch('/api/getTypes');
 
 	const main = document.getElementById('main');
 	main.style.display = 'block';

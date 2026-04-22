@@ -1,6 +1,6 @@
 import { simplePost, simpleFetch } from '../fetch.mjs';
 
-const API_BASE = 'http://localhost:3000';
+const API_BASE = '/api';
 
 const modal = document.getElementById('backupModal');
 const container = document.getElementById('backupModal--content');
