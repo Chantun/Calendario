@@ -61,13 +61,18 @@ function createInput(type, placeholder = '') {
 	input.classList.add('input-modal');
 	if (type === 'text' || type === 'date' || type === 'time') {
 		input.classList.add('input-modal--text');
-	}
+	} else if (type === 'checkbox') input.classList.add('input-modal--checkbox');
 	if (placeholder) input.placeholder = placeholder;
 	return input;
 }
 
 function createSelect(options) {
 	const select = document.createElement('select');
+	select.classList.add(
+		'input-modal',
+		'input-modal--text',
+		'input-modal--select',
+	);
 	options.forEach(({ value, label }) => {
 		const option = document.createElement('option');
 		option.value = value;

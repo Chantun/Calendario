@@ -11,26 +11,26 @@ export default async function mainPage(user) {
 	const main = document.getElementById('main');
 	main.style.display = 'block';
 
-	const addOption = document.getElementById('add-options');
-	const addContent = document.getElementById('add-content');
-
-	addOption.addEventListener('change', (e) => {
-		addContent.innerHTML = '';
-		if (e.target.value == 'materia') {
-			addSection.addMateria(user);
-		} else if (e.target.value == 'horario') {
-			addSection.addHorario(user, materias);
-		} else if (e.target.value == 'event') {
-			addSection.addEvent(user, materias, types);
-		} else if (e.target.value == 'period') {
-			addSection.addPeriod(user, types);
-		} else if (e.target.value == 'holiday') {
-			addSection.addHoliday(user);
-		} else if (e.target.value == 'backup') {
-			addSection.addBackup(user);
-		}
-		addOption.value = '';
-	});
+	document
+		.getElementById('addMateria')
+		.addEventListener('click', () => addSection.addMateria(user));
+	document
+		.getElementById('addHorario')
+		.addEventListener('click', () => addSection.addHorario(user, materias));
+	document
+		.getElementById('addEvent')
+		.addEventListener('click', () =>
+			addSection.addEvent(user, materias, types),
+		);
+	document
+		.getElementById('addPeriod')
+		.addEventListener('click', () => addSection.addPeriod(user, types));
+	document
+		.getElementById('addHoliday')
+		.addEventListener('click', () => addSection.addHoliday(user));
+	document
+		.getElementById('addBackup')
+		.addEventListener('click', () => addSection.addBackup(user));
 
 	const modifyOption = document.getElementById('modify-options');
 

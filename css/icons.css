@@ -30,6 +30,7 @@
 	line-height: 1;
 	-webkit-font-smoothing: antialiased;
 	-moz-osx-font-smoothing: grayscale;
+	color: #c65a5a;
 }
 .icon_before--big::before {
 	font-size: 20px !important;
@@ -75,6 +76,24 @@
 .icon_banana::before {
 	content: '';
 	color: #eee125;
+}
+.icon_backup::before {
+	content: '';
+}
+.icon_materia::before {
+	content: '';
+}
+.icon_horario::before {
+	content: '';
+}
+.icon_event::before {
+	content: '';
+}
+.icon_period::before {
+	content: '';
+}
+.icon_red::before {
+	color: #c65a5a;
 }
 
 @media (max-width: 740px) {

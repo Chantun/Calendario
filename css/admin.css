@@ -1,7 +1,14 @@
 @import './style.css';
+@import './icons.css';
+
+:root {
+	--row-hover: #d1ab84;
+}
 
 #main {
 	margin: auto;
+	max-width: 100dvw;
+	overflow-x: hidden;
 }
 
 #authModal,
@@ -14,6 +21,12 @@
 	width: 100%;
 	height: 100%;
 	background: #0008;
+}
+
+#authModal > div,
+#inputModal > div,
+#backupModal > div {
+	box-shadow: 0 0 25px #0008;
 }
 
 #inputModal--content,
@@ -43,6 +56,11 @@
 	align-items: center;
 }
 
+.add-row {
+	display: flex;
+	gap: 16px;
+}
+
 .button__list {
 	list-style: none;
 	display: flex;
@@ -56,62 +74,90 @@
 	gap: 20px;
 }
 
-.int-list {
-	list-style: '+';
+.int-list__subtitle {
+	color: var(--font-title);
+	margin: 0;
+}
+
+.int-list--item {
+	font-weight: 700;
+	cursor: pointer;
+	color: var(--font-title);
+	transition: all 0.1s;
+	padding: 4px 6px;
+	border-radius: 4px;
+}
+.int-list--item:hover {
+	background-color: var(--row-hover);
 }
 
 .content {
-	width: 90%;
-}
-
-.content--tiny {
-	max-width: 40%;
-	margin: auto;
-}
-
-.content--flex {
+	width: 100%;
 	display: flex;
-	flex-direction: row;
+	flex-direction: column;
+	overflow-x: auto;
+}
+
+.section {
+	padding: 10px 0;
+	border-bottom: solid 1px var(--calendar-border);
+}
+
+.others-section {
+	display: flex;
+}
+.others-section div {
+	padding: 5px 10px;
+}
+.others-section div:first-child {
+	border-right: solid 1px var(--calendar-border);
 }
 
 .table {
-	flex: 3;
-	border: solid 1px #000;
+	box-sizing: border-box;
+	width: 100%;
+	border: solid 1px var(--calendar-border);
+	margin-top: 10px;
+	box-shadow: 0 0 15px #0004;
 }
 
 .row {
+	width: 100%;
 	display: flex;
 	flex-direction: row;
 	cursor: pointer;
 }
 .row:nth-child(even) {
-	background-color: #eee;
+	background-color: var(--calendar-background);
+}
+.row:nth-child(odd) {
+	background-color: var(--background);
 }
 .row:hover {
-	background-color: #dde;
-}
-
-.row--select {
-	background-color: #cce !important;
-	cursor: default;
+	background-color: var(--row-hover);
 }
 
 .row--header {
-	border-bottom: solid 1px #000;
-	background-color: #cce;
+	border-bottom: solid 1px var(--calendar-border);
+	background-color: var(--calendar-header) !important;
+	color: var(--font-title);
 	cursor: default;
-}
-.row--header:hover,
-.row--select:hover {
-	background-color: #cce;
 }
 
 .cell {
+	box-sizing: border-box;
 	flex: 1;
-	border-right: solid 1px #000;
+	border-right: solid 1px var(--calendar-border);
+	white-space: nowrap;
+	overflow-x: auto;
+	padding: 0 4px;
 }
 .cell:last-child {
 	border: none;
+}
+
+.row--header > .cell {
+	border-right: none;
 }
 
 .edit {
@@ -129,11 +175,18 @@
 .input-modal {
 	border: none;
 	background-color: var(--calendar-background);
-	margin-left: 20px;
+	transition: all 0.2s;
 }
 
 .input-modal--text {
 	border-left: solid 3px var(--calendar-border);
+}
+.input-modal--text:hover,
+.input-modal--text:focus {
+	background-color: var(--row-hover);
+}
+.input-modal--text:focus {
+	outline-color: var(--calendar-border);
 }
 
 .input-modal--color {
@@ -141,9 +194,16 @@
 }
 
 .input-modal--checkbox {
+	border: solid 1px var(--calendar-border);
+	background-color: var(--background);
+}
+.input-modal--checkbox:checked {
+	background-color: var(--row-hover);
 }
 
 .input-modal--select {
+	border-left: solid 2px var(--calendar-border);
+	border-bottom: solid 2px var(--calendar-border);
 }
 
 .input-modal__label {
@@ -161,4 +221,16 @@
 .error {
 	font-size: 0.8rem;
 	color: #971212;
+}
+
+@media (max-width: 670px) {
+	.others-section {
+		flex-direction: column;
+	}
+	.others-section div {
+		padding: 0;
+	}
+	.others-section div:first-child {
+		border-right: none;
+	}
 }

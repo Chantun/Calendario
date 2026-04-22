@@ -36,6 +36,5 @@ export async function simplePost(URL, auth = '', body = {}) {
 		return result;
 	} catch (err) {
 		console.error(err.message);
-		return { erorr: err.message };
 	}
 }

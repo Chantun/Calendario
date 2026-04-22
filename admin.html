@@ -11,21 +11,33 @@
 		<div id="authModal">
 			<div id="login-div" class="authModal--div">
 				<h3>Login</h3>
-				<input id="user" type="text" placeholder="Usuario" /><br /><br />
-				<input id="pass" type="password" placeholder="Password" /><br /><br />
+				<input
+					id="user"
+					type="text"
+					placeholder="Usuario"
+					class="input-modal input-modal--text"
+				/><br /><br />
+				<input
+					id="pass"
+					type="password"
+					placeholder="Password"
+					class="input-modal input-modal--text"
+				/><br /><br />
 				<input
 					id="pass2"
 					type="password"
 					placeholder="Confirm Password"
+					class="input-modal input-modal--text"
 					style="display: none"
 				/><br />
-				<button id="login_button">OK</button>
-				<button id="send_register" style="display: none">OK</button>
-				<button id="register_button">Register</button>
-				<span class="error_text"></span>
+				<div class="buttons-container">
+					<button id="login_button">OK</button>
+					<button id="send_register" style="display: none">OK</button>
+					<button id="register_button">Register</button>
+				</div>
+				<span class="error_text error"></span>
 			</div>
 		</div>
-		<div id="error_section"></div>
 		<main id="main" style="display: none">
 			<div id="inputModal">
 				<div id="input-div" class="inputModal--div">
@@ -46,29 +58,45 @@
 					<p class="error"></p>
 				</div>
 			</div>
-			<section id="add-section">
+			<section id="add-section" class="section">
 				<h2 class="title title--dark">Añadir</h2>
-				<select name="options" id="add-options" autocomplete="off">
-					<option value="materia">Materia</option>
-					<option value="horario">Horario</option>
-					<option value="event">Evento</option>
-					<option value="period">Periodo</option>
-					<option value="holiday">Feriado</option>
-					<option value="backup">Backup</option>
-				</select>
-				<!-- <ul class="int-list">
-					<li class="int-list--item">Materia</li>
-					<li class="int-list--item">Horario</li>
-					<li class="int-list--item">Evento</li>
-					<li class="int-list--item">Periodo</li>
-					<li class="int-list--item">Feriado</li>
-					<li class="int-list--item">Backup</li>
-				</ul> -->
+				<h3 class="int-list__subtitle">Academico:</h3>
+				<div class="add-row">
+					<p id="addMateria" class="int-list--item">
+						[ <span class="icon_before icon_materia"></span> Materia ]
+					</p>
+					<p id="addHorario" class="int-list--item">
+						[ <span class="icon_before icon_horario"></span> Horario ]
+					</p>
+				</div>
+				<h3 class="int-list__subtitle">Calendario:</h3>
+				<div class="add-row">
+					<p id="addEvent" class="int-list--item">
+						[ <span class="icon_before icon_event"></span> Evento ]
+					</p>
+					<p id="addPeriod" class="int-list--item">
+						[ <span class="icon_before icon_period"></span> Periodo ]
+					</p>
+					<p id="addHoliday" class="int-list--item">
+						[ <span class="icon_before icon_holiday icon_red"></span> Feriado ]
+					</p>
+				</div>
+				<h3 class="int-list__subtitle">Otros:</h3>
+				<div class="add-row">
+					<p id="addBackup" class="int-list--item">
+						[ <span class="icon_before icon_backup"></span> Backup ]
+					</p>
+				</div>
 				<div id="add-content" class="content"></div>
 			</section>
-			<section id="modify-section">
+			<section id="modify-section" class="section">
 				<h2 class="title title--dark">Modificar</h2>
-				<select name="options" id="modify-options" autocomplete="off">
+				<select
+					name="options"
+					id="modify-options"
+					autocomplete="off"
+					class="input-modal input-modal--text input-modal--select"
+				>
 					<option value="" disabled selected hidden>N/A</option>
 					<option value="materia">Materia</option>
 					<option value="horario">Horario</option>
@@ -76,19 +104,17 @@
 					<option value="period">Periodo</option>
 					<option value="holiday">Feriado</option>
 				</select>
-				<div id="modify-content" class="content content--flex">
+				<div id="modify-content" class="content">
 					<table id="modify-table" class="table"></table>
 				</div>
 			</section>
-			<section class="admin-section">
-				<h2 class="title title--dark">Admins</h2>
-				<div id="admin-content" class="content--tiny content--flex">
+			<section class="section others-section">
+				<div id="admin-content" class="content">
+					<h2 class="title title--dark">Admins</h2>
 					<table id="admin-table" class="table"></table>
 				</div>
-			</section>
-			<section class="backup-section">
-				<h2 class="title title--dark">Backups</h2>
-				<div id="backup-content" class="content--tiny content--flex">
+				<div id="backup-content" class="content">
+					<h2 class="title title--dark">Backups</h2>
 					<table id="backup-table" class="table"></table>
 				</div>
 			</section>

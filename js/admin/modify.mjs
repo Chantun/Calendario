@@ -112,7 +112,11 @@ function createInput({
 
 function createSelect(options, selected = 0) {
 	const select = document.createElement('select');
-	select.classList.add('input-modal', 'input-modal--select');
+	select.classList.add(
+		'input-modal',
+		'input-modal--text',
+		'input-modal--select',
+	);
 	options.forEach((n) => {
 		const option = document.createElement('option');
 		option.value = n.id;
@@ -151,8 +155,6 @@ function createRow(cells, onClick) {
 	row.classList.add('row');
 	row.innerHTML = cells.map((cell) => `<td class="cell">${cell}</td>`).join('');
 	row.addEventListener('click', () => {
-		document.querySelector('.row--select')?.classList.remove('row--select');
-		row.classList.add('row--select');
 		onClick();
 	});
 	return row;
